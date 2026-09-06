@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { AdminUser, AdminRole } from "../types";
 import { getStoredAdminUsers, saveAdminUsers, getStoredCurrentUser, saveCurrentUser } from "../data/storage";
+import { SupabaseService } from "../utils/supabaseSync";
 
 interface AuthContextType {
   currentUser: AdminUser | null;
@@ -24,6 +25,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>(getStoredAdminUsers);
   const [currentUser, setCurrentUser] = useState<AdminUser | null>(getStoredCurrentUser);
 
+  // Hydrate admin users from Supabase on load
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const cloudUsers = await SupabaseService.getAdminUsers();
+        if (cloudUsers && cloudUsers.length > 0) {
+          setAdminUsers(cloudUsers);
+        }
+      } catch (err) {
+        console.warn("Using local admin users cache:", err);
+      }
+    };
+    fetchUsers();
+  }, []);
+
   useEffect(() => {
     saveAdminUsers(adminUsers);
   }, [adminUsers]);
@@ -44,6 +60,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAdminUsers((prev) =>
         prev.map((u) => (u.id === user.id ? updatedUser : u))
       );
+      SupabaseService.saveAdminUser(updatedUser);
       return true;
     }
     return false;
@@ -75,11 +92,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       createdAt: new Date().toISOString()
     };
     setAdminUsers((prev) => [...prev, newUser]);
+    SupabaseService.saveAdminUser(newUser);
   };
 
   const updateAdminUser = (id: string, updates: Partial<AdminUser>) => {
     setAdminUsers((prev) =>
-      prev.map((u) => (u.id === id ? { ...u, ...updates } : u))
+      prev.map((u) => {
+        if (u.id === id) {
+          const updated = { ...u, ...updates };
+          SupabaseService.saveAdminUser(updated);
+          return updated;
+        }
+        return u;
+      })
     );
     if (currentUser && currentUser.id === id) {
       setCurrentUser((prev) => (prev ? { ...prev, ...updates } : null));
@@ -88,6 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const deleteAdminUser = (id: string) => {
     setAdminUsers((prev) => prev.filter((u) => u.id !== id));
+    SupabaseService.deleteAdminUser(id);
     if (currentUser && currentUser.id === id) {
       setCurrentUser(null);
     }

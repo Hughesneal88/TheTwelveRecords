@@ -15,6 +15,7 @@ import {
   exportSubscribersCSV,
   resetAllToFactoryDefaults
 } from "../data/storage";
+import { SupabaseService } from "../utils/supabaseSync";
 
 interface ContentContextType {
   labelInfo: LabelInfo;
@@ -90,6 +91,31 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isNewsletterModalOpen, setIsNewsletterModalOpen] = useState<boolean>(false);
   const [isDemoModalOpen, setIsDemoModalOpen] = useState<boolean>(false);
 
+  // Hydrate from Supabase on mount
+  useEffect(() => {
+    const fetchFromSupabase = async () => {
+      try {
+        const [cloudInfo, cloudArtists, cloudReleases, cloudDemos, cloudSubs] = await Promise.all([
+          SupabaseService.getLabelInfo(),
+          SupabaseService.getArtists(),
+          SupabaseService.getReleases(),
+          SupabaseService.getDemos(),
+          SupabaseService.getSubscribers()
+        ]);
+
+        if (cloudInfo) setLabelInfoState(cloudInfo);
+        if (cloudArtists && cloudArtists.length > 0) setArtistsState(cloudArtists);
+        if (cloudReleases && cloudReleases.length > 0) setReleasesState(cloudReleases);
+        if (cloudDemos && cloudDemos.length > 0) setDemosState(cloudDemos);
+        if (cloudSubs && cloudSubs.length > 0) setSubscribersState(cloudSubs);
+      } catch (err) {
+        console.warn("Using local cache, cloud sync error:", err);
+      }
+    };
+
+    fetchFromSupabase();
+  }, []);
+
   // Handle URL hash / path routing on load
   useEffect(() => {
     const handlePopState = () => {
@@ -136,7 +162,9 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   }, [subscribers]);
 
   const updateLabelInfo = (info: Partial<LabelInfo>) => {
-    setLabelInfoState((prev) => ({ ...prev, ...info }));
+    const updated = { ...labelInfo, ...info };
+    setLabelInfoState(updated);
+    SupabaseService.saveLabelInfo(updated);
   };
 
   const addArtist = (artistData: Omit<Artist, "id">) => {
@@ -145,11 +173,19 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       id: `artist-${Date.now()}`
     };
     setArtistsState((prev) => [newArtist, ...prev]);
+    SupabaseService.saveArtist(newArtist);
   };
 
   const updateArtist = (id: string, updates: Partial<Artist>) => {
     setArtistsState((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, ...updates } : a))
+      prev.map((a) => {
+        if (a.id === id) {
+          const updated = { ...a, ...updates };
+          SupabaseService.saveArtist(updated);
+          return updated;
+        }
+        return a;
+      })
     );
     if (selectedArtistModal && selectedArtistModal.id === id) {
       setSelectedArtistModal((prev) => (prev ? { ...prev, ...updates } : null));
@@ -158,6 +194,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const deleteArtist = (id: string) => {
     setArtistsState((prev) => prev.filter((a) => a.id !== id));
+    SupabaseService.deleteArtist(id);
     if (selectedArtistModal && selectedArtistModal.id === id) {
       setSelectedArtistModal(null);
     }
@@ -173,11 +210,19 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       id: `rel-${Date.now()}`
     };
     setReleasesState((prev) => [newRelease, ...prev]);
+    SupabaseService.saveRelease(newRelease);
   };
 
   const updateRelease = (id: string, updates: Partial<Release>) => {
     setReleasesState((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, ...updates } : r))
+      prev.map((r) => {
+        if (r.id === id) {
+          const updated = { ...r, ...updates };
+          SupabaseService.saveRelease(updated);
+          return updated;
+        }
+        return r;
+      })
     );
     if (selectedReleaseModal && selectedReleaseModal.id === id) {
       setSelectedReleaseModal((prev) => (prev ? { ...prev, ...updates } : null));
@@ -186,6 +231,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const deleteRelease = (id: string) => {
     setReleasesState((prev) => prev.filter((r) => r.id !== id));
+    SupabaseService.deleteRelease(id);
     if (selectedReleaseModal && selectedReleaseModal.id === id) {
       setSelectedReleaseModal(null);
     }
@@ -203,20 +249,25 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
       status: "New"
     };
     setDemosState((prev) => [newDemo, ...prev]);
+    SupabaseService.insertDemo(newDemo);
   };
 
   const updateDemoStatus = (id: string, status: DemoStatus, notes?: string) => {
     setDemosState((prev) =>
-      prev.map((d) =>
-        d.id === id
-          ? { ...d, status, internalNotes: notes !== undefined ? notes : d.internalNotes }
-          : d
-      )
+      prev.map((d) => {
+        if (d.id === id) {
+          const updated = { ...d, status, internalNotes: notes !== undefined ? notes : d.internalNotes };
+          SupabaseService.updateDemo(updated);
+          return updated;
+        }
+        return d;
+      })
     );
   };
 
   const deleteDemo = (id: string) => {
     setDemosState((prev) => prev.filter((d) => d.id !== id));
+    SupabaseService.deleteDemo(id);
   };
 
   const addSubscriber = (email: string, name?: string, source: string = "Website"): boolean => {
@@ -232,6 +283,7 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         subscribedAt: new Date().toISOString()
       };
       setSubscribersState((prev) => [newSub, ...prev]);
+      SupabaseService.insertSubscriber(newSub);
     }
     return true;
   };
