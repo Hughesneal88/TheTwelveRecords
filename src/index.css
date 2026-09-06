@@ -4,100 +4,85 @@
 
 @layer base {
   html {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    color-scheme: dark;
-    background-color: #08080a;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #070709;
+    color: #f4f4f5;
   }
 
   body {
-    background-color: #08080a;
-    color: #f1f5f9;
+    background-color: #070709;
+    color: #f4f4f5;
     overflow-x: hidden;
   }
 
-  h1, h2, h3, .font-cinzel {
-    font-family: 'Cinzel', serif;
-    letter-spacing: 0.05em;
+  h1, h2, h3, h4, .font-display {
+    font-family: 'Syne', sans-serif;
+    letter-spacing: -0.03em;
   }
+}
+
+/* Subtle Film Grain Texture Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0b0f;
+  background: #070709;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #272733;
-  border-radius: 4px;
+  background: #27272a;
+  border-radius: 2px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #c8a858;
 }
 
-/* Glassmorphic Cards */
-.glass-panel {
-  background: rgba(14, 14, 18, 0.78);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(212, 175, 55, 0.12);
+/* Editorial Minimalist Cards */
+.editorial-card {
+  background: #0d0d11;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.glass-panel-hover {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+.editorial-card:hover {
+  border-color: rgba(200, 168, 88, 0.4);
+  background: #121217;
+  transform: translateY(-2px);
 }
 
-.glass-panel-hover:hover {
-  background: rgba(20, 20, 26, 0.9);
-  border-color: rgba(212, 175, 55, 0.35);
-  box-shadow: 0 10px 30px -10px rgba(212, 175, 55, 0.15);
+/* Audiophile Minimal Waveform */
+@keyframes audioBar {
+  0%, 100% { height: 3px; }
+  50% { height: 18px; }
 }
 
-/* Gold Gradient Text */
-.text-gold-gradient {
-  background: linear-gradient(135deg, #fef08a 0%, #d4af37 50%, #b45309 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.text-gold-light {
-  background: linear-gradient(135deg, #ffffff 0%, #fef08a 50%, #d4af37 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* Atmospheric Hero Background */
-.hero-glow-radial {
-  background: radial-gradient(circle at 50% 35%, rgba(212, 175, 55, 0.14) 0%, rgba(217, 119, 6, 0.06) 40%, transparent 70%);
-}
-
-.ambient-particle {
-  position: absolute;
-  border-radius: 50%;
-  pointer-events: none;
-}
-
-/* Waveform Bars Animation */
-@keyframes waveAnimation {
-  0%, 100% { height: 4px; }
-  50% { height: 22px; }
-}
-
-.wave-bar {
+.audio-bar {
   display: inline-block;
-  width: 3px;
-  background: #d4af37;
-  border-radius: 2px;
-  animation: waveAnimation 1.2s ease-in-out infinite;
+  width: 2.5px;
+  background: #c8a858;
+  border-radius: 1px;
+  animation: audioBar 1s ease-in-out infinite;
 }
 
-.wave-bar:nth-child(1) { animation-delay: 0.0s; }
-.wave-bar:nth-child(2) { animation-delay: 0.2s; }
-.wave-bar:nth-child(3) { animation-delay: 0.4s; }
-.wave-bar:nth-child(4) { animation-delay: 0.1s; }
-.wave-bar:nth-child(5) { animation-delay: 0.3s; }
+.audio-bar:nth-child(1) { animation-delay: 0.0s; }
+.audio-bar:nth-child(2) { animation-delay: 0.2s; }
+.audio-bar:nth-child(3) { animation-delay: 0.4s; }
+.audio-bar:nth-child(4) { animation-delay: 0.1s; }
+.audio-bar:nth-child(5) { animation-delay: 0.3s; }

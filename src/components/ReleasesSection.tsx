@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import { useContent } from "../context/ContentContext";
 import { useAudio } from "../context/AudioContext";
-import { Release, ReleaseFormat } from "../types";
-import { Disc3, Play, Pause, ExternalLink, Sparkles, Music } from "lucide-react";
+import { Play, Pause, Music } from "lucide-react";
 
 export const ReleasesSection: React.FC = () => {
   const { releases, setSelectedReleaseModal } = useContent();
@@ -16,41 +15,37 @@ export const ReleasesSection: React.FC = () => {
     : releases.filter((r) => r.format === selectedFormat);
 
   return (
-    <section id="releases" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-gold-500/10">
-      {/* Header & Controls */}
+    <section id="releases" className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto border-t border-white/10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div>
-          <div className="flex items-center gap-2 text-gold-400 text-xs font-semibold uppercase tracking-[0.2em] mb-2">
-            <Disc3 className="w-4 h-4" />
-            <span>CATALOG & DISCOGRAPHY</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-cinzel font-bold text-white tracking-wide">
-            LATEST <span className="text-gold-gradient">RELEASES</span>
+          <span className="font-mono text-xs uppercase tracking-widest text-[#c8a858] block mb-2">
+            02 // DISCOGRAPHY
+          </span>
+          <h2 className="font-display font-black text-3xl sm:text-5xl text-white tracking-tightest uppercase">
+            CATALOG RELEASES
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 mt-2 max-w-xl">
-            Stream singles, worship EPs, and live choral recordings produced by The Twelve Records.
+          <p className="text-sm text-zinc-400 mt-2 max-w-md font-light">
+            Original recordings, acoustic worship sessions, and choral albums from Accra.
           </p>
         </div>
 
-        {/* Format Filters */}
         <div className="flex flex-wrap gap-2">
           {formats.map((f) => (
             <button
               key={f}
               onClick={() => setSelectedFormat(f)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-medium tracking-wider uppercase transition-all ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider transition-all ${
                 selectedFormat === f
-                  ? "bg-gold-500 text-black font-semibold shadow-md shadow-gold-500/20"
-                  : "bg-white/5 hover:bg-white/10 text-slate-300 border border-white/10"
+                  ? "bg-white text-black font-bold"
+                  : "bg-zinc-900 text-zinc-400 hover:text-white border border-white/10"
               }`}
             >
-              {f === "All" ? "All Releases" : `${f}s`}
+              {f === "All" ? "All Formats" : `${f}s`}
             </button>
           ))}
         </div>
       </div>
 
-      {/* Discography Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {filteredReleases.map((release) => {
           const leadTrack = release.tracks[0];
@@ -59,32 +54,25 @@ export const ReleasesSection: React.FC = () => {
           return (
             <div
               key={release.id}
-              className="glass-panel glass-panel-hover rounded-2xl overflow-hidden border border-gold-500/15 flex flex-col justify-between group transition-all duration-300 transform hover:-translate-y-1"
+              className="editorial-card rounded-2xl overflow-hidden flex flex-col justify-between group"
             >
               <div>
-                {/* Album Cover & Play Overlay */}
-                <div className="relative aspect-square w-full overflow-hidden bg-black/40">
+                <div className="relative aspect-square w-full overflow-hidden bg-black">
                   <img
                     src={release.coverUrl}
                     alt={release.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80";
-                    }}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-60 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80"></div>
 
-                  {/* Catalog Pill */}
-                  <div className="absolute top-4 left-4 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-gold-500/40 text-[10px] font-mono font-bold text-gold-400">
+                  <div className="absolute top-4 left-4 px-2.5 py-1 rounded bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-[#c8a858] border border-white/10">
                     {release.catalogNumber}
                   </div>
 
-                  {/* Format Pill */}
-                  <div className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/20 text-[10px] uppercase font-bold text-slate-200">
+                  <div className="absolute top-4 right-4 px-2.5 py-1 rounded bg-black/80 backdrop-blur-md text-[10px] font-mono uppercase text-white border border-white/10">
                     {release.format}
                   </div>
 
-                  {/* Centered Play Button */}
                   {leadTrack && (
                     <button
                       onClick={() => {
@@ -96,74 +84,51 @@ export const ReleasesSection: React.FC = () => {
                       }}
                       className={`absolute inset-0 m-auto w-14 h-14 rounded-full flex items-center justify-center transition-all ${
                         isLeadPlaying
-                          ? "bg-gold-500 text-black shadow-2xl scale-100"
-                          : "bg-black/60 backdrop-blur-md text-white hover:bg-gold-500 hover:text-black group-hover:scale-110"
+                          ? "bg-[#c8a858] text-black scale-100 shadow-2xl"
+                          : "bg-black/70 text-white hover:bg-white hover:text-black group-hover:scale-105"
                       }`}
-                      title={isLeadPlaying ? "Pause sample" : "Play sample preview"}
+                      title={isLeadPlaying ? "Pause" : "Play sample"}
                     >
                       {isLeadPlaying ? (
-                        <Pause className="w-6 h-6 fill-current" />
+                        <Pause className="w-5 h-5 fill-current" />
                       ) : (
-                        <Play className="w-6 h-6 fill-current ml-1" />
+                        <Play className="w-5 h-5 fill-current ml-1" />
                       )}
                     </button>
                   )}
                 </div>
 
-                {/* Release Information */}
                 <div className="p-6">
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-gold-500/90 block mb-1">
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 block mb-1">
                     {release.releaseDate} &bull; {release.genre}
                   </span>
                   <h3
                     onClick={() => setSelectedReleaseModal(release)}
-                    className="text-lg font-cinzel font-bold text-white group-hover:text-gold-300 transition-colors cursor-pointer"
+                    className="font-display font-bold text-xl text-white group-hover:text-[#c8a858] transition-colors cursor-pointer"
                   >
                     {release.title}
                   </h3>
-                  <p className="text-xs font-medium text-slate-300 mt-0.5">
+                  <p className="text-xs text-zinc-300 font-medium mt-1">
                     {release.artistName}
                   </p>
-                  <p className="text-xs text-slate-400 font-light mt-3 line-clamp-2 leading-relaxed">
+                  <p className="text-xs text-zinc-400 font-light mt-3 line-clamp-2 leading-relaxed">
                     {release.description}
                   </p>
                 </div>
               </div>
 
-              {/* Card Footer: Track Count & DSP Links */}
-              <div className="px-6 py-4 border-t border-white/10 bg-black/30 flex items-center justify-between">
+              <div className="px-6 py-4 border-t border-white/10 bg-black/20 flex items-center justify-between text-xs font-mono">
                 <button
                   onClick={() => setSelectedReleaseModal(release)}
-                  className="text-xs font-semibold text-gold-400 hover:text-gold-300 flex items-center gap-1"
+                  className="text-zinc-300 hover:text-white flex items-center gap-1.5"
                 >
-                  <Music className="w-3.5 h-3.5" />
-                  <span>{release.tracks.length} {release.tracks.length === 1 ? "Track" : "Tracks"} &bull; Details</span>
+                  <Music className="w-3.5 h-3.5 text-[#c8a858]" />
+                  <span>{release.tracks.length} {release.tracks.length === 1 ? "Track" : "Tracks"} &bull; Tracklist</span>
                 </button>
 
-                <div className="flex items-center space-x-2">
-                  {release.spotifyUrl && (
-                    <a
-                      href={release.spotifyUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[11px] font-mono text-slate-400 hover:text-[#1DB954] transition-colors"
-                      title="Spotify"
-                    >
-                      SPOTIFY
-                    </a>
-                  )}
-                  {release.boomplayUrl && (
-                    <a
-                      href={release.boomplayUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-[11px] font-mono text-slate-400 hover:text-gold-400 transition-colors"
-                      title="Boomplay"
-                    >
-                      BOOMPLAY
-                    </a>
-                  )}
-                </div>
+                {release.spotifyUrl && (
+                  <span className="text-zinc-500 font-bold">DSP RELEASE</span>
+                )}
               </div>
             </div>
           );

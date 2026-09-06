@@ -42,7 +42,7 @@ export const PageEditor: React.FC = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-xl font-cinzel font-bold text-white">
+        <h3 className="text-xl font-display font-bold text-white">
           PAGE CONTENT & COPY EDITOR
         </h3>
         <p className="text-xs text-slate-400">
@@ -60,7 +60,7 @@ export const PageEditor: React.FC = () => {
       <form onSubmit={handleSave} className="p-6 rounded-2xl bg-black/40 border border-gold-500/20 space-y-6">
         {/* Section 1: Hero Headlines */}
         <div className="space-y-3">
-          <h4 className="font-cinzel font-bold text-gold-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <h4 className="font-display font-bold text-gold-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
             <Radio className="w-3.5 h-3.5" /> HERO BANNER COPY
           </h4>
 
@@ -93,7 +93,7 @@ export const PageEditor: React.FC = () => {
 
         {/* Section 2: About Us Story & Accra Heritage */}
         <div className="space-y-3 pt-4 border-t border-white/10">
-          <h4 className="font-cinzel font-bold text-gold-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <h4 className="font-display font-bold text-gold-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
             <FileText className="w-3.5 h-3.5" /> ABOUT US & ACCRA HERITAGE STORY
           </h4>
 
@@ -148,7 +148,7 @@ export const PageEditor: React.FC = () => {
 
         {/* Section 3: Contact Details & Accra Location */}
         <div className="space-y-3 pt-4 border-t border-white/10">
-          <h4 className="font-cinzel font-bold text-gold-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
+          <h4 className="font-display font-bold text-gold-400 text-xs uppercase tracking-wider flex items-center gap-1.5">
             <Globe className="w-3.5 h-3.5" /> ACCRA HQ & CONTACT DIRECTORY
           </h4>
 

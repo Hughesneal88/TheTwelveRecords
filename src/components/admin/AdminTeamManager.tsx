@@ -62,7 +62,7 @@ export const AdminTeamManager: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-cinzel font-bold text-white">
+          <h3 className="text-xl font-display font-bold text-white">
             ADMIN TEAM & ARTIST MANAGER ACCESS
           </h3>
           <p className="text-xs text-slate-400">
@@ -91,7 +91,7 @@ export const AdminTeamManager: React.FC = () => {
       {/* Add New User Form */}
       {isAdding && (
         <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-black/50 border border-gold-500/25 space-y-4 animate-in fade-in">
-          <h4 className="font-cinzel font-bold text-white text-sm">
+          <h4 className="font-display font-bold text-white text-sm">
             Create Team Account
           </h4>
 

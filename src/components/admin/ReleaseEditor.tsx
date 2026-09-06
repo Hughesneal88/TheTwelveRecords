@@ -139,7 +139,7 @@ export const ReleaseEditor: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-cinzel font-bold text-white">
+          <h3 className="text-xl font-display font-bold text-white">
             DISCOGRAPHY & CATALOG MANAGEMENT
           </h3>
           <p className="text-xs text-slate-400">
@@ -169,7 +169,7 @@ export const ReleaseEditor: React.FC = () => {
       {(editingRelease || isCreatingNew) ? (
         <form onSubmit={handleSave} className="p-6 rounded-2xl bg-black/40 border border-gold-500/20 space-y-6">
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
-            <h4 className="font-cinzel font-bold text-white text-base flex items-center gap-2">
+            <h4 className="font-display font-bold text-white text-base flex items-center gap-2">
               <Disc className="w-4 h-4 text-gold-400" />
               <span>{isCreatingNew ? "Add New Catalog Release" : `Editing: ${formData.title}`}</span>
             </h4>
@@ -291,7 +291,7 @@ export const ReleaseEditor: React.FC = () => {
           {/* Tracklist Management */}
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-cinzel font-bold text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
+              <span className="text-xs font-display font-bold text-gold-400 uppercase tracking-wider flex items-center gap-1.5">
                 <Music className="w-3.5 h-3.5" /> TRACKLIST & AUDIO SAMPLES ({formData.tracks.length})
               </span>
               <button

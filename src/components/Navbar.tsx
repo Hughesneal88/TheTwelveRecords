@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useContent } from "../context/ContentContext";
 import { useAuth } from "../context/AuthContext";
-import { Menu, X, Disc3, Sparkles, User, ShieldCheck, LogOut } from "lucide-react";
+import { Menu, X, ArrowUpRight, User, ShieldCheck, LogOut } from "lucide-react";
 
 export const Navbar: React.FC = () => {
   const { currentView, navigateToHome, setIsLoginModalOpen, setIsAdminModalOpen, setIsDemoModalOpen } = useContent();
@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
+      setIsScrolled(window.scrollY > 30);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -35,100 +35,99 @@ export const Navbar: React.FC = () => {
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? "bg-[#08080a]/90 backdrop-blur-md border-b border-gold-500/20 py-3 shadow-2xl"
-          : "bg-gradient-to-b from-black/80 via-black/40 to-transparent py-5"
+          ? "bg-[#070709]/95 backdrop-blur-md border-b border-white/10 py-3.5"
+          : "bg-transparent py-5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand Logo & Title */}
         <button
           onClick={navigateToHome}
-          className="flex items-center space-x-3 group text-left focus:outline-none"
+          className="flex items-center space-x-3.5 group text-left focus:outline-none"
         >
-          <div className="relative w-11 h-11 rounded-full overflow-hidden border border-gold-500/40 p-0.5 shadow-lg group-hover:border-gold-400 transition-all">
+          <div className="w-10 h-10 rounded-full overflow-hidden border border-[#c8a858]/40 p-0.5 group-hover:border-[#c8a858] transition-colors bg-black flex-shrink-0">
             <img
               src="/assets/logo.jpg"
               alt="The Twelve Records"
-              className="w-full h-full object-cover rounded-full group-hover:scale-105 transition-transform duration-300"
-              onError={(e) => {
-                // Fallback SVG if asset is loading
-                (e.target as HTMLElement).style.display = "none";
-              }}
+              className="w-full h-full object-cover rounded-full"
             />
-            <div className="absolute inset-0 rounded-full border border-gold-400/30 animate-pulse-slow"></div>
           </div>
           <div>
-            <span className="font-cinzel text-lg md:text-xl font-bold tracking-wider text-white group-hover:text-gold-400 transition-colors flex items-center gap-1.5">
-              THE TWELVE <span className="text-gold-500 font-light">RECORDS</span>
+            <span className="font-display font-black text-base sm:text-lg tracking-tight text-white group-hover:text-[#c8a858] transition-colors block leading-none">
+              THE TWELVE
             </span>
-            <span className="text-[10px] uppercase tracking-[0.25em] text-slate-400 block -mt-1">
-              ACCRA, GHANA
+            <span className="font-mono text-[10px] tracking-[0.2em] text-[#a1a1aa] uppercase mt-0.5 block">
+              RECORDS &bull; ACCRA
             </span>
           </div>
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8 text-xs font-semibold tracking-wider text-[#a1a1aa] uppercase">
           <button
             onClick={() => handleNavClick("artists")}
-            className="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors tracking-wide"
+            className="hover:text-white transition-colors"
           >
-            ROSTER
+            Roster
           </button>
           <button
             onClick={() => handleNavClick("releases")}
-            className="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors tracking-wide"
+            className="hover:text-white transition-colors"
           >
-            DISCOGRAPHY
+            Releases
           </button>
           <button
             onClick={() => handleNavClick("about")}
-            className="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors tracking-wide"
+            className="hover:text-white transition-colors"
           >
-            OUR STORY
+            About
           </button>
           <button
             onClick={() => handleNavClick("store")}
-            className="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors tracking-wide flex items-center gap-1.5"
+            className="hover:text-white transition-colors flex items-center gap-1.5"
           >
-            VAULT <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30">SOON</span>
+            <span>Vault</span>
+            <span className="text-[9px] px-1.5 py-0.2 rounded bg-white/10 text-[#c8a858] font-mono">
+              SOON
+            </span>
           </button>
           <button
             onClick={() => handleNavClick("demos")}
-            className="text-sm font-medium text-slate-300 hover:text-gold-400 transition-colors tracking-wide"
+            className="hover:text-white transition-colors"
           >
-            DEMOS
+            A&R / Demos
           </button>
         </nav>
 
-        {/* Action Buttons & Portal Access */}
+        {/* Action Buttons */}
         <div className="hidden md:flex items-center space-x-4">
           <button
             onClick={() => setIsDemoModalOpen(true)}
-            className="px-4 py-2 text-xs font-semibold uppercase tracking-wider bg-gold-500/10 hover:bg-gold-500/20 text-gold-400 border border-gold-500/40 hover:border-gold-400 rounded-full transition-all flex items-center gap-1.5 shadow-sm"
+            className="px-4 py-2 text-xs font-semibold uppercase tracking-wider text-black bg-[#c8a858] hover:bg-[#d9c585] rounded-full transition-all flex items-center gap-1.5"
           >
-            <Sparkles className="w-3.5 h-3.5" /> Submit Demo
+            <span>Submit Demo</span>
+            <ArrowUpRight className="w-3.5 h-3.5" />
           </button>
 
           {currentUser ? (
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 pl-2 border-l border-white/10">
               <button
                 onClick={() => setIsAdminModalOpen(true)}
-                className="px-3.5 py-2 text-xs font-semibold bg-gradient-to-r from-gold-600 to-amber-600 text-black rounded-full hover:brightness-110 transition-all flex items-center gap-1.5 shadow-md"
+                className="px-3.5 py-2 text-xs font-semibold bg-white/10 hover:bg-white/20 text-white rounded-full transition-all flex items-center gap-1.5"
               >
-                <ShieldCheck className="w-3.5 h-3.5" />
+                <ShieldCheck className="w-3.5 h-3.5 text-[#c8a858]" />
                 <span>
                   {currentUser.role === "super_admin"
                     ? "Admin"
                     : currentUser.role === "artist_manager"
                     ? "Artist Studio"
-                    : "Dashboard"}
+                    : "CMS"}
                 </span>
               </button>
               <button
                 onClick={logout}
                 title="Log out"
-                className="p-2 text-slate-400 hover:text-rose-400 hover:bg-white/5 rounded-full transition-colors"
+                className="p-2 text-zinc-400 hover:text-rose-400 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -136,11 +135,11 @@ export const Navbar: React.FC = () => {
           ) : (
             <button
               onClick={() => setIsLoginModalOpen(true)}
-              className="p-2 text-slate-400 hover:text-gold-400 hover:bg-white/5 rounded-full transition-colors flex items-center gap-1 text-xs"
-              title="Portal Login (Admin & Artists)"
+              className="p-2 text-zinc-400 hover:text-white rounded-full transition-colors flex items-center gap-1.5 text-xs font-medium"
+              title="Portal Login"
             >
               <User className="w-4 h-4" />
-              <span className="text-[11px] font-medium hidden lg:inline">Portal</span>
+              <span className="hidden lg:inline text-[11px] uppercase tracking-wider">Portal</span>
             </button>
           )}
         </div>
@@ -150,14 +149,14 @@ export const Navbar: React.FC = () => {
           {currentUser && (
             <button
               onClick={() => setIsAdminModalOpen(true)}
-              className="p-2 bg-gold-500/20 text-gold-400 rounded-full"
+              className="p-2 bg-[#c8a858]/20 text-[#c8a858] rounded-full"
             >
               <ShieldCheck className="w-4 h-4" />
             </button>
           )}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-slate-200 hover:text-gold-400 focus:outline-none"
+            className="p-2 text-zinc-300 hover:text-white focus:outline-none"
             aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -165,38 +164,38 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#0d0d12]/95 backdrop-blur-xl border-b border-gold-500/20 px-6 py-6 space-y-4 shadow-2xl animate-in slide-in-from-top-4 duration-200">
-          <div className="flex flex-col space-y-3">
+        <div className="md:hidden bg-[#0a0a0e] border-b border-white/10 px-6 py-6 space-y-4">
+          <div className="flex flex-col space-y-3 font-display text-lg tracking-tight">
             <button
               onClick={() => handleNavClick("artists")}
-              className="text-left text-base font-medium text-slate-200 hover:text-gold-400 py-2 border-b border-white/5"
+              className="text-left text-zinc-200 hover:text-[#c8a858] py-2 border-b border-white/5"
             >
-              ARTIST ROSTER
+              ARTISTS
             </button>
             <button
               onClick={() => handleNavClick("releases")}
-              className="text-left text-base font-medium text-slate-200 hover:text-gold-400 py-2 border-b border-white/5"
+              className="text-left text-zinc-200 hover:text-[#c8a858] py-2 border-b border-white/5"
             >
-              DISCOGRAPHY
+              RELEASES
             </button>
             <button
               onClick={() => handleNavClick("about")}
-              className="text-left text-base font-medium text-slate-200 hover:text-gold-400 py-2 border-b border-white/5"
+              className="text-left text-zinc-200 hover:text-[#c8a858] py-2 border-b border-white/5"
             >
-              OUR STORY & ACCRA ROOTS
+              ABOUT / ACCRA
             </button>
             <button
               onClick={() => handleNavClick("store")}
-              className="text-left text-base font-medium text-slate-200 hover:text-gold-400 py-2 border-b border-white/5 flex items-center justify-between"
+              className="text-left text-zinc-200 hover:text-[#c8a858] py-2 border-b border-white/5 flex items-center justify-between"
             >
               <span>MERCH VAULT</span>
-              <span className="text-xs px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-400">COMING SOON</span>
+              <span className="text-xs px-2 py-0.5 rounded bg-white/10 text-[#c8a858] font-mono">COMING SOON</span>
             </button>
             <button
               onClick={() => handleNavClick("demos")}
-              className="text-left text-base font-medium text-slate-200 hover:text-gold-400 py-2 border-b border-white/5"
+              className="text-left text-zinc-200 hover:text-[#c8a858] py-2 border-b border-white/5"
             >
               DEMO SUBMISSIONS
             </button>
@@ -208,7 +207,7 @@ export const Navbar: React.FC = () => {
                 setMobileMenuOpen(false);
                 setIsDemoModalOpen(true);
               }}
-              className="w-full py-2.5 text-center text-xs font-semibold uppercase tracking-wider bg-gold-500/15 text-gold-400 border border-gold-500/40 rounded-lg"
+              className="w-full py-3 text-center text-xs font-bold uppercase tracking-wider bg-[#c8a858] text-black rounded-lg"
             >
               Submit Music Demo
             </button>
@@ -220,7 +219,7 @@ export const Navbar: React.FC = () => {
                     setMobileMenuOpen(false);
                     setIsAdminModalOpen(true);
                   }}
-                  className="flex-1 py-2.5 bg-gold-500 text-black font-semibold text-xs rounded-lg text-center"
+                  className="flex-1 py-2.5 bg-white/10 text-white font-semibold text-xs rounded-lg text-center"
                 >
                   Open Dashboard
                 </button>
@@ -229,7 +228,7 @@ export const Navbar: React.FC = () => {
                     logout();
                     setMobileMenuOpen(false);
                   }}
-                  className="px-4 py-2.5 bg-white/10 text-rose-300 font-semibold text-xs rounded-lg"
+                  className="px-4 py-2.5 bg-white/5 text-rose-300 font-semibold text-xs rounded-lg"
                 >
                   Log Out
                 </button>
@@ -240,7 +239,7 @@ export const Navbar: React.FC = () => {
                   setMobileMenuOpen(false);
                   setIsLoginModalOpen(true);
                 }}
-                className="w-full py-2.5 bg-white/5 hover:bg-white/10 text-slate-300 text-xs font-medium rounded-lg text-center"
+                className="w-full py-2.5 bg-white/5 text-zinc-400 hover:text-white text-xs font-medium rounded-lg text-center"
               >
                 Portal Login (Admin & Artists)
               </button>

@@ -63,7 +63,7 @@ export const AdminModal: React.FC = () => {
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-cinzel text-sm font-bold text-white">
+                <span className="font-display text-sm font-bold text-white">
                   THE TWELVE CMS &bull; CONTROL ROOM
                 </span>
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-300 font-mono uppercase font-bold border border-gold-500/30">
@@ -217,7 +217,7 @@ export const AdminModal: React.FC = () => {
             {activeTab === "settings" && (
               <div className="space-y-6 max-w-xl">
                 <div>
-                  <h3 className="text-xl font-cinzel font-bold text-white">
+                  <h3 className="text-xl font-display font-bold text-white">
                     DATA BACKUP & REPOSITORY SYNC
                   </h3>
                   <p className="text-xs text-slate-400 mt-1 leading-relaxed">

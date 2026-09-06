@@ -34,7 +34,7 @@ export const DemosInbox: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-cinzel font-bold text-white">
+          <h3 className="text-xl font-display font-bold text-white">
             A&R DEMO SUBMISSION INBOX ({demos.length})
           </h3>
           <p className="text-xs text-slate-400">
@@ -81,7 +81,7 @@ export const DemosInbox: React.FC = () => {
                       Submitted {new Date(demo.submittedAt).toLocaleDateString()}
                     </span>
                   </div>
-                  <h4 className="text-lg font-cinzel font-bold text-white">
+                  <h4 className="text-lg font-display font-bold text-white">
                     {demo.artistName}
                   </h4>
                   <p className="text-xs text-slate-400">

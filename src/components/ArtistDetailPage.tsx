@@ -2,19 +2,7 @@ import React from "react";
 import { useContent } from "../context/ContentContext";
 import { useAuth } from "../context/AuthContext";
 import { useAudio } from "../context/AudioContext";
-import {
-  ArrowLeft,
-  Play,
-  Pause,
-  Mail,
-  Sparkles,
-  ExternalLink,
-  Edit3,
-  Video,
-  Disc,
-  Radio,
-  Share2
-} from "lucide-react";
+import { ArrowLeft, Play, Pause, ExternalLink, Edit3, Video, Disc, Clock, Share2 } from "lucide-react";
 
 export const ArtistDetailPage: React.FC = () => {
   const { activeArtistSlug, getArtistBySlug, getReleasesByArtistId, navigateToHome, setIsAdminModalOpen, setSelectedReleaseModal } = useContent();
@@ -26,13 +14,13 @@ export const ArtistDetailPage: React.FC = () => {
   if (!artist) {
     return (
       <div className="min-h-screen pt-32 pb-20 px-4 text-center max-w-xl mx-auto">
-        <h2 className="text-3xl font-cinzel font-bold text-white mb-4">Artist Not Found</h2>
-        <p className="text-slate-400 text-sm mb-6">The requested artist profile does not exist or has been updated.</p>
+        <h2 className="font-display font-bold text-3xl text-white mb-4">Artist Not Found</h2>
+        <p className="text-zinc-400 text-sm mb-6">The requested artist profile does not exist.</p>
         <button
           onClick={navigateToHome}
-          className="px-6 py-2.5 rounded-full bg-gold-500 text-black font-semibold text-xs uppercase tracking-wider"
+          className="px-6 py-2.5 rounded-full bg-white text-black font-bold text-xs uppercase"
         >
-          Return to Label Roster
+          Return to Roster
         </button>
       </div>
     );
@@ -45,22 +33,21 @@ export const ArtistDetailPage: React.FC = () => {
     if (navigator.share) {
       navigator.share({
         title: `${artist.name} | The Twelve Records`,
-        text: `Check out ${artist.name} on The Twelve Records (Accra, Ghana)`,
         url: window.location.href
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("Artist link copied to clipboard!");
+      alert("Link copied to clipboard!");
     }
   };
 
   return (
-    <div className="min-h-screen pt-20 pb-32">
-      {/* Back Button & Top Navigation */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+    <div className="min-h-screen pt-24 pb-36 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* Top Breadcrumb Bar */}
+      <div className="py-4 flex items-center justify-between border-b border-white/10 mb-8">
         <button
           onClick={navigateToHome}
-          className="flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-gold-400 uppercase tracking-widest transition-colors"
+          className="flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-white uppercase tracking-wider transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
           <span>Back to Label Roster</span>
@@ -70,154 +57,121 @@ export const ArtistDetailPage: React.FC = () => {
           {canEdit && (
             <button
               onClick={() => setIsAdminModalOpen(true)}
-              className="px-4 py-2 bg-gradient-to-r from-gold-500 to-amber-600 text-black text-xs font-bold uppercase tracking-wider rounded-full shadow-lg hover:brightness-110 transition-all flex items-center gap-1.5"
+              className="px-4 py-2 bg-[#c8a858] text-black text-xs font-bold uppercase tracking-wider rounded-full flex items-center gap-1.5"
             >
               <Edit3 className="w-3.5 h-3.5" />
-              <span>Edit My Artist Page</span>
+              <span>Edit Profile</span>
             </button>
           )}
 
           <button
             onClick={handleShare}
-            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
-            title="Share Artist Page"
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300"
+            title="Share"
           >
             <Share2 className="w-4 h-4" />
           </button>
         </div>
       </div>
 
-      {/* Hero Banner Section */}
-      <div className="relative h-[380px] sm:h-[480px] w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative w-full h-full rounded-3xl overflow-hidden border border-gold-500/20 shadow-2xl">
-          <img
-            src={artist.bannerUrl || artist.photoUrl}
-            alt={artist.name}
-            className="w-full h-full object-cover object-center"
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1600&q=80";
-            }}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#08080a] via-[#08080a]/60 to-transparent"></div>
+      {/* Hero Spread */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-end pb-12 border-b border-white/10">
+        <div className="lg:col-span-5">
+          <div className="relative aspect-[4/5] rounded-2xl overflow-hidden border border-white/10 bg-black">
+            <img
+              src={artist.photoUrl}
+              alt={artist.name}
+              className="w-full h-full object-cover object-top"
+            />
+          </div>
+        </div>
 
-          {/* Hero Content Overlay */}
-          <div className="absolute bottom-6 left-6 right-6 sm:bottom-10 sm:left-10 sm:right-10 flex flex-col sm:flex-row sm:items-end justify-between gap-6">
-            <div className="flex items-end gap-5">
-              <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden border-2 border-gold-400 p-0.5 shadow-2xl flex-shrink-0 bg-black">
-                <img
-                  src={artist.photoUrl}
-                  alt={artist.name}
-                  className="w-full h-full object-cover rounded-xl"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&q=80";
-                  }}
-                />
-              </div>
+        <div className="lg:col-span-7 space-y-6">
+          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-[#c8a858]">
+            <span>{artist.origin}</span>
+            <span>&bull;</span>
+            <span>{artist.genre}</span>
+          </div>
 
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-gold-400">
-                    {artist.origin} &bull; {artist.genre}
-                  </span>
-                  <span className="px-2 py-0.5 rounded-full bg-gold-500/20 text-gold-300 text-[10px] font-bold uppercase tracking-wider border border-gold-500/30">
-                    Official Artist
-                  </span>
-                </div>
-                <h1 className="text-3xl sm:text-5xl font-cinzel font-black text-white tracking-wide">
-                  {artist.name}
-                </h1>
-                <p className="text-xs sm:text-sm text-slate-300 font-light mt-1 max-w-xl">
-                  {artist.tagline}
-                </p>
-              </div>
-            </div>
+          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl text-white tracking-tightest uppercase leading-none">
+            {artist.name}
+          </h1>
 
-            {/* DSP Streaming Badges */}
-            <div className="flex flex-wrap items-center gap-2">
-              {artist.socials.spotify && (
-                <a
-                  href={artist.socials.spotify}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-[#1DB954]/20 hover:bg-[#1DB954] text-[#1DB954] hover:text-black font-semibold text-xs tracking-wider transition-all border border-[#1DB954]/40"
-                >
-                  Spotify
-                </a>
-              )}
-              {artist.socials.appleMusic && (
-                <a
-                  href={artist.socials.appleMusic}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-pink-500/20 hover:bg-pink-500 text-pink-300 hover:text-white font-semibold text-xs tracking-wider transition-all border border-pink-500/40"
-                >
-                  Apple Music
-                </a>
-              )}
-              {artist.socials.boomplay && (
-                <a
-                  href={artist.socials.boomplay}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-gold-500/20 hover:bg-gold-500 text-gold-300 hover:text-black font-semibold text-xs tracking-wider transition-all border border-gold-500/40"
-                >
-                  Boomplay
-                </a>
-              )}
-              {artist.socials.audiomack && (
-                <a
-                  href={artist.socials.audiomack}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-black font-semibold text-xs tracking-wider transition-all border border-amber-500/40"
-                >
-                  Audiomack
-                </a>
-              )}
-              {artist.socials.instagram && (
-                <a
-                  href={artist.socials.instagram}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-semibold tracking-wider transition-all"
-                >
-                  Instagram
-                </a>
-              )}
-            </div>
+          <p className="text-lg text-zinc-300 font-light leading-relaxed max-w-xl">
+            {artist.tagline}
+          </p>
+
+          {/* DSP Streaming Badges */}
+          <div className="flex flex-wrap gap-2 pt-2">
+            {artist.socials.spotify && (
+              <a
+                href={artist.socials.spotify}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-[#1DB954] text-white hover:text-black font-semibold text-xs transition-all font-mono"
+              >
+                SPOTIFY
+              </a>
+            )}
+            {artist.socials.boomplay && (
+              <a
+                href={artist.socials.boomplay}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-[#c8a858] text-white hover:text-black font-semibold text-xs transition-all font-mono"
+              >
+                BOOMPLAY
+              </a>
+            )}
+            {artist.socials.audiomack && (
+              <a
+                href={artist.socials.audiomack}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-amber-500 text-white hover:text-black font-semibold text-xs transition-all font-mono"
+              >
+                AUDIOMACK
+              </a>
+            )}
+            {artist.socials.appleMusic && (
+              <a
+                href={artist.socials.appleMusic}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-pink-500 text-white hover:text-white font-semibold text-xs transition-all font-mono"
+              >
+                APPLE MUSIC
+              </a>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Main Artist Content Layout */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12 grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Left 2 Columns: Bio, Ministry Vision & Featured Video */}
-        <div className="lg:col-span-2 space-y-10">
-          {/* Biography */}
-          <div className="glass-panel rounded-2xl p-8 border border-gold-500/15">
-            <h3 className="text-xl font-cinzel font-bold text-white mb-4 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-gold-400"></span>
-              BIOGRAPHY & MINISTRY CALLING
+      {/* Main Content: Bio & Discography Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-12">
+        <div className="lg:col-span-7 space-y-10">
+          <div>
+            <h3 className="font-display font-bold text-xl text-white uppercase tracking-wider mb-4">
+              Biography
             </h3>
-            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-light whitespace-pre-line mb-6">
+            <p className="text-zinc-300 font-light text-base leading-relaxed whitespace-pre-line">
               {artist.bio}
             </p>
-
-            {artist.ministryVision && (
-              <div className="p-5 rounded-xl bg-gold-500/10 border-l-4 border-gold-400 text-xs sm:text-sm text-gold-200 italic leading-relaxed">
-                "{artist.ministryVision}"
-              </div>
-            )}
           </div>
 
-          {/* Featured Video / Live Session Embed */}
+          {artist.ministryVision && (
+            <div className="p-6 rounded-2xl bg-[#0e0e13] border-l-4 border-[#c8a858] text-sm text-zinc-200 font-light italic leading-relaxed">
+              "{artist.ministryVision}"
+            </div>
+          )}
+
           {artist.featuredVideoUrl && (
-            <div className="glass-panel rounded-2xl p-8 border border-gold-500/15">
-              <h3 className="text-xl font-cinzel font-bold text-white mb-4 flex items-center gap-2">
-                <Video className="w-5 h-5 text-gold-400" />
-                FEATURED WORSHIP & VIDEO SPOTLIGHT
+            <div>
+              <h3 className="font-display font-bold text-xl text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+                <Video className="w-5 h-5 text-[#c8a858]" />
+                <span>Featured Worship Spotlight</span>
               </h3>
-              <div className="relative aspect-video rounded-xl overflow-hidden border border-white/10 bg-black">
+              <div className="relative aspect-video rounded-2xl overflow-hidden border border-white/10 bg-black">
                 <iframe
                   src={artist.featuredVideoUrl}
                   title={`${artist.name} Spotlight Video`}
@@ -230,19 +184,18 @@ export const ArtistDetailPage: React.FC = () => {
           )}
         </div>
 
-        {/* Right Column: Artist Discography & Booking Contact */}
-        <div className="space-y-8">
-          {/* Discography by this artist */}
-          <div className="glass-panel rounded-2xl p-6 border border-gold-500/15">
-            <h3 className="text-lg font-cinzel font-bold text-white mb-4 flex items-center gap-2">
-              <Disc className="w-4 h-4 text-gold-400" />
-              DISCOGRAPHY ({artistReleases.length})
+        {/* Right Side: Discography & Booking */}
+        <div className="lg:col-span-5 space-y-8">
+          <div className="p-6 rounded-2xl editorial-card border border-white/10">
+            <h3 className="font-display font-bold text-lg text-white uppercase tracking-wider mb-4 flex items-center gap-2">
+              <Disc className="w-4 h-4 text-[#c8a858]" />
+              <span>Catalog Releases ({artistReleases.length})</span>
             </h3>
 
             {artistReleases.length === 0 ? (
-              <p className="text-xs text-slate-400">New releases currently in production in Accra studios.</p>
+              <p className="text-xs text-zinc-500 font-mono">Catalog recordings in production in Accra.</p>
             ) : (
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {artistReleases.map((release) => {
                   const leadTrack = release.tracks[0];
                   const isTrackPlaying = isPlaying && currentTrack?.id === leadTrack?.id;
@@ -250,7 +203,7 @@ export const ArtistDetailPage: React.FC = () => {
                   return (
                     <div
                       key={release.id}
-                      className="p-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 hover:border-gold-500/30 transition-all flex items-center justify-between gap-3 group"
+                      className="p-3.5 rounded-xl bg-black/40 border border-white/5 flex items-center justify-between gap-3 group"
                     >
                       <div
                         className="flex items-center gap-3 min-w-0 cursor-pointer flex-1"
@@ -262,15 +215,12 @@ export const ArtistDetailPage: React.FC = () => {
                           className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
                         />
                         <div className="min-w-0">
-                          <span className="text-[10px] font-mono text-gold-400 block">
-                            {release.catalogNumber} &bull; {release.format}
+                          <span className="text-[10px] font-mono text-[#c8a858] block">
+                            {release.catalogNumber}
                           </span>
-                          <h4 className="text-xs font-semibold text-white truncate group-hover:text-gold-300 transition-colors">
+                          <h4 className="text-xs font-display font-bold text-white truncate group-hover:text-[#c8a858] transition-colors">
                             {release.title}
                           </h4>
-                          <span className="text-[10px] text-slate-400">
-                            {release.releaseDate}
-                          </span>
                         </div>
                       </div>
 
@@ -283,17 +233,16 @@ export const ArtistDetailPage: React.FC = () => {
                               playTrack(leadTrack, release);
                             }
                           }}
-                          className={`p-2 rounded-full transition-all flex-shrink-0 ${
+                          className={`p-2.5 rounded-full flex-shrink-0 transition-all ${
                             isTrackPlaying
-                              ? "bg-gold-500 text-black shadow-md shadow-gold-500/40"
-                              : "bg-white/10 text-white hover:bg-gold-500 hover:text-black"
+                              ? "bg-[#c8a858] text-black"
+                              : "bg-white/10 text-white hover:bg-white hover:text-black"
                           }`}
-                          title={isTrackPlaying ? "Pause sample" : "Play sample preview"}
                         >
                           {isTrackPlaying ? (
-                            <Pause className="w-4 h-4 fill-current" />
+                            <Pause className="w-3.5 h-3.5 fill-current" />
                           ) : (
-                            <Play className="w-4 h-4 fill-current ml-0.5" />
+                            <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
                           )}
                         </button>
                       )}
@@ -304,18 +253,17 @@ export const ArtistDetailPage: React.FC = () => {
             )}
           </div>
 
-          {/* Booking & Ministry Inquiries */}
-          <div className="glass-panel rounded-2xl p-6 border border-gold-500/15">
-            <h3 className="text-lg font-cinzel font-bold text-white mb-2 flex items-center gap-2">
-              <Mail className="w-4 h-4 text-gold-400" />
-              BOOKING & MINISTRY INQUIRIES
-            </h3>
-            <p className="text-xs text-slate-300 mb-4 leading-relaxed font-light">
-              For church conferences, festival invitations, worship ministry, and press features with {artist.name}:
+          {/* Booking Contact */}
+          <div className="p-6 rounded-2xl editorial-card border border-white/10 space-y-3">
+            <h4 className="font-display font-bold text-sm text-white uppercase tracking-wider">
+              Booking & Inquiries
+            </h4>
+            <p className="text-xs text-zinc-400 font-light leading-relaxed">
+              For church invitations, festival appearances, and live recordings with {artist.name}:
             </p>
             <a
-              href={`mailto:${artist.bookingEmail || "bookings@thetwelverecords.com"}?subject=Booking Inquiry for ${artist.name}`}
-              className="w-full py-3 rounded-xl bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-black font-semibold text-xs uppercase tracking-wider transition-all flex items-center justify-center gap-2 border border-gold-500/30"
+              href={`mailto:${artist.bookingEmail || "bookings@thetwelverecords.com"}`}
+              className="w-full py-3 rounded-xl bg-white text-black hover:bg-[#c8a858] font-bold text-xs uppercase tracking-wider transition-colors flex items-center justify-center gap-2"
             >
               <span>Contact Management</span>
               <ExternalLink className="w-3.5 h-3.5" />

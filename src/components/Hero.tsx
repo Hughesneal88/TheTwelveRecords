@@ -1,31 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useContent } from "../context/ContentContext";
 import { useAudio } from "../context/AudioContext";
-import { Play, Pause, ChevronDown, Sparkles, Disc, Radio } from "lucide-react";
+import { Play, Pause, ArrowDown, Disc, Sparkles } from "lucide-react";
 
 export const Hero: React.FC = () => {
-  const { labelInfo, releases, setSelectedReleaseModal, setIsDemoModalOpen, setIsNewsletterModalOpen } = useContent();
+  const { releases, setSelectedReleaseModal, setIsDemoModalOpen } = useContent();
   const { playTrack, togglePlay, isPlaying, currentTrack } = useAudio();
 
   const featuredRelease = releases.find((r) => r.isFeatured) || releases[0];
   const featuredTrack = featuredRelease?.tracks[0];
   const isThisFeaturedPlaying = isPlaying && currentTrack?.id === featuredTrack?.id;
-
-  // Dynamic typing / tagline cycler
-  const taglines = [
-    "PIONEERING FAITH & SOUND",
-    "AFRO-GOSPEL TO THE NATIONS",
-    "CONTEMPORARY WORSHIP FROM ACCRA",
-    "SONIC EXCELLENCE FOR ETERNITY"
-  ];
-  const [taglineIndex, setTaglineIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTaglineIndex((prev) => (prev + 1) % taglines.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleFeaturedPlay = () => {
     if (!featuredRelease || !featuredTrack) return;
@@ -42,140 +26,119 @@ export const Hero: React.FC = () => {
   };
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center pt-24 pb-16 overflow-hidden hero-glow-radial">
-      {/* Background Animated Gradient Aura */}
-      <div className="absolute inset-0 z-0 opacity-40 pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-gradient-to-br from-gold-500/20 via-amber-600/10 to-transparent rounded-full blur-3xl animate-pulse-slow"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-gold-600/10 rounded-full blur-3xl"></div>
-        <div className="absolute top-1/3 left-10 w-80 h-80 bg-amber-500/5 rounded-full blur-3xl"></div>
+    <section className="relative min-h-[88vh] flex flex-col justify-between pt-32 pb-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Top Metadata Strip */}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6 text-[11px] font-mono tracking-widest text-[#a1a1aa] uppercase">
+        <div className="flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-[#c8a858] animate-pulse"></span>
+          <span className="text-white font-medium">ACCRA HQ &bull; GHANA, WEST AFRICA</span>
+        </div>
+        <div className="hidden sm:flex items-center gap-6">
+          <span>CHRISTIAN MUSIC IMPRINT</span>
+          <span>EST. 2026</span>
+          <span className="text-[#c8a858]">GLOBAL DSP DISTRIBUTION</span>
+        </div>
       </div>
 
-      {/* Subtle Grid Lines Overlay */}
-      <div
-        className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
-        style={{
-          backgroundImage: "linear-gradient(to right, #d4af37 1px, transparent 1px), linear-gradient(to bottom, #d4af37 1px, transparent 1px)",
-          backgroundSize: "60px 60px"
-        }}
-      ></div>
+      {/* Main Center Content */}
+      <div className="my-auto py-12 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        {/* Left Typography Block */}
+        <div className="lg:col-span-8 space-y-6">
+          <h1 className="font-display font-black text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tightest text-white leading-[0.95] uppercase">
+            PIONEERING <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-zinc-200 to-[#c8a858]">
+              FAITH & SOUND.
+            </span>
+          </h1>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
-        {/* Official Gold Emblem Spotlight */}
-        <div className="relative mb-6 group cursor-pointer" onClick={() => scrollToSection("artists")}>
-          <div className="absolute -inset-4 rounded-full bg-gradient-to-r from-gold-500/30 to-amber-500/20 blur-xl opacity-70 group-hover:opacity-100 transition-opacity"></div>
-          <div className="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full p-1 bg-gradient-to-b from-gold-400 via-gold-600 to-amber-900 shadow-2xl border border-gold-300/30">
+          <p className="text-base sm:text-lg md:text-xl text-zinc-400 max-w-2xl font-light leading-relaxed">
+            Redefining Afro-Gospel, Contemporary Worship, and African Christian music from Accra to the global stage. Built with sonic mastery and spiritual depth.
+          </p>
+
+          <div className="flex flex-wrap items-center gap-4 pt-2">
+            <button
+              onClick={() => scrollToSection("artists")}
+              className="px-8 py-3.5 bg-white hover:bg-[#c8a858] text-black font-display font-bold text-xs uppercase tracking-widest rounded-full transition-all transform hover:-translate-y-0.5"
+            >
+              Explore Roster
+            </button>
+
+            <button
+              onClick={() => setIsDemoModalOpen(true)}
+              className="px-7 py-3.5 bg-zinc-900 hover:bg-zinc-800 text-zinc-200 hover:text-white border border-white/15 font-semibold text-xs uppercase tracking-widest rounded-full transition-all flex items-center gap-2"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-[#c8a858]" />
+              <span>Submit Music Demo</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Right Emblem & Featured Release Card */}
+        <div className="lg:col-span-4 flex flex-col items-center lg:items-end space-y-6">
+          {/* Official Emblem */}
+          <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-full overflow-hidden border border-[#c8a858]/30 p-1 bg-black shadow-2xl">
             <img
               src="/assets/logo.jpg"
-              alt="The Twelve Records Official Emblem"
-              className="w-full h-full object-cover rounded-full shadow-inner"
+              alt="The Twelve Records Emblem"
+              className="w-full h-full object-cover rounded-full"
             />
           </div>
-          {/* Subtle Rotating Ring */}
-          <div className="absolute -inset-2 rounded-full border border-gold-500/20 border-dashed animate-spin-slow pointer-events-none"></div>
-        </div>
 
-        {/* Location & Ethos Tag */}
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-gold-500/10 border border-gold-500/25 text-gold-400 text-xs font-semibold uppercase tracking-[0.2em] mb-4">
-          <Radio className="w-3.5 h-3.5 text-gold-400 animate-pulse" />
-          <span>ACCRA, GHANA &bull; CHRISTIAN MUSIC RECORD LABEL</span>
-        </div>
-
-        {/* Dynamic Tagline Title */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-cinzel font-black tracking-tight text-white max-w-4xl leading-[1.1] mb-6">
-          <span className="text-gold-light transition-all duration-700 block">
-            {taglines[taglineIndex]}
-          </span>
-        </h1>
-
-        {/* Subtitle / Mission */}
-        <p className="text-base sm:text-lg md:text-xl text-slate-300 max-w-2xl font-light leading-relaxed mb-8">
-          {labelInfo.heroSubheadline}
-        </p>
-
-        {/* Action Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4 mb-12">
-          <button
-            onClick={() => scrollToSection("artists")}
-            className="px-7 py-3.5 bg-gradient-to-r from-gold-500 to-amber-600 hover:from-gold-400 hover:to-amber-500 text-black font-bold text-xs uppercase tracking-widest rounded-full shadow-lg hover:shadow-gold-500/25 transition-all transform hover:-translate-y-0.5"
-          >
-            Explore Roster
-          </button>
-
-          <button
-            onClick={() => setIsDemoModalOpen(true)}
-            className="px-6 py-3.5 bg-white/5 hover:bg-white/10 text-slate-200 hover:text-white border border-gold-500/30 hover:border-gold-400 font-semibold text-xs uppercase tracking-widest rounded-full transition-all flex items-center gap-2"
-          >
-            <Sparkles className="w-4 h-4 text-gold-400" />
-            Submit Music Demo
-          </button>
-
-          <button
-            onClick={() => setIsNewsletterModalOpen(true)}
-            className="px-6 py-3.5 bg-gold-500/10 hover:bg-gold-500/20 text-gold-300 hover:text-gold-200 border border-gold-500/40 font-semibold text-xs uppercase tracking-widest rounded-full transition-all"
-          >
-            Get Free Sampler
-          </button>
-        </div>
-
-        {/* Live Featured Release Pill (Interactive Sample Trigger) */}
-        {featuredRelease && featuredTrack && (
-          <div className="glass-panel rounded-2xl p-3 sm:p-4 max-w-lg w-full flex items-center justify-between gap-4 border border-gold-500/25 shadow-2xl transform hover:scale-[1.02] transition-all">
-            <div
-              className="flex items-center gap-3.5 text-left cursor-pointer flex-1 min-w-0"
-              onClick={() => setSelectedReleaseModal(featuredRelease)}
-            >
-              <div className="relative w-14 h-14 rounded-lg overflow-hidden flex-shrink-0 border border-gold-500/30">
+          {/* Minimalist Live Audio Sample Card */}
+          {featuredRelease && featuredTrack && (
+            <div className="w-full max-w-sm p-4 rounded-2xl editorial-card border border-white/10 flex items-center justify-between gap-4">
+              <div
+                className="flex items-center gap-3.5 min-w-0 cursor-pointer flex-1"
+                onClick={() => setSelectedReleaseModal(featuredRelease)}
+              >
                 <img
                   src={featuredRelease.coverUrl}
                   alt={featuredRelease.title}
-                  className="w-full h-full object-cover"
+                  className="w-14 h-14 rounded-xl object-cover border border-white/10 flex-shrink-0"
                 />
-                <div className="absolute inset-0 bg-black/20"></div>
+                <div className="min-w-0">
+                  <span className="text-[10px] font-mono text-[#c8a858] block uppercase">
+                    SPOTLIGHT &bull; {featuredRelease.catalogNumber}
+                  </span>
+                  <h4 className="text-sm font-display font-bold text-white truncate">
+                    {featuredTrack.title}
+                  </h4>
+                  <p className="text-xs text-zinc-400 truncate">
+                    {featuredRelease.artistName}
+                  </p>
+                </div>
               </div>
-              <div className="min-w-0">
-                <span className="text-[10px] font-bold tracking-wider text-gold-400 uppercase block">
-                  FEATURED DROP &bull; {featuredRelease.catalogNumber}
-                </span>
-                <h4 className="text-sm font-semibold text-white truncate">
-                  {featuredTrack.title}
-                </h4>
-                <p className="text-xs text-slate-400 truncate">
-                  {featuredRelease.artistName}
-                </p>
-              </div>
+
+              <button
+                onClick={handleFeaturedPlay}
+                className={`p-3 rounded-full flex-shrink-0 transition-all ${
+                  isThisFeaturedPlaying
+                    ? "bg-[#c8a858] text-black shadow-lg"
+                    : "bg-white/10 hover:bg-[#c8a858] hover:text-black text-white"
+                }`}
+                title={isThisFeaturedPlaying ? "Pause preview" : "Play track preview"}
+              >
+                {isThisFeaturedPlaying ? (
+                  <Pause className="w-4 h-4 fill-current" />
+                ) : (
+                  <Play className="w-4 h-4 fill-current ml-0.5" />
+                )}
+              </button>
             </div>
-
-            <button
-              onClick={handleFeaturedPlay}
-              className={`p-3 rounded-full flex-shrink-0 transition-all ${
-                isThisFeaturedPlaying
-                  ? "bg-gold-500 text-black shadow-lg shadow-gold-500/40"
-                  : "bg-white/10 hover:bg-gold-500 hover:text-black text-white"
-              }`}
-              title={isThisFeaturedPlaying ? "Pause preview" : "Play audio sample"}
-            >
-              {isThisFeaturedPlaying ? (
-                <Pause className="w-5 h-5 fill-current" />
-              ) : (
-                <Play className="w-5 h-5 fill-current ml-0.5" />
-              )}
-            </button>
-          </div>
-        )}
-
-        {/* Smooth Scroll Caret */}
-        <div className="mt-14">
-          <button
-            onClick={() => scrollToSection("artists")}
-            className="text-slate-400 hover:text-gold-400 flex flex-col items-center gap-1 transition-colors group"
-            aria-label="Scroll to roster"
-          >
-            <span className="text-[10px] uppercase tracking-widest font-mono text-slate-400 group-hover:text-gold-400">
-              EXPLORE
-            </span>
-            <ChevronDown className="w-5 h-5 animate-bounce text-gold-400" />
-          </button>
+          )}
         </div>
+      </div>
+
+      {/* Bottom Scroll Indicator */}
+      <div className="pt-6 border-t border-white/10 flex items-center justify-between text-xs text-zinc-500">
+        <span className="font-mono text-[11px]">SCROLL TO EXPLORE LABEL CATALOG</span>
+        <button
+          onClick={() => scrollToSection("artists")}
+          className="text-zinc-400 hover:text-white flex items-center gap-1.5 transition-colors"
+        >
+          <span className="text-[11px] font-mono">DISCOVER</span>
+          <ArrowDown className="w-3.5 h-3.5" />
+        </button>
       </div>
     </section>
   );

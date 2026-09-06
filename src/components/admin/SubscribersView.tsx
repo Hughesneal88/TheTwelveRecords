@@ -9,7 +9,7 @@ export const SubscribersView: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-cinzel font-bold text-white">
+          <h3 className="text-xl font-display font-bold text-white">
             THE TWELVE CIRCLE SUBSCRIBERS ({subscribers.length})
           </h3>
           <p className="text-xs text-slate-400">

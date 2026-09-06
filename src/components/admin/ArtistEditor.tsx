@@ -140,7 +140,7 @@ export const ArtistEditor: React.FC = () => {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h3 className="text-xl font-cinzel font-bold text-white">
+          <h3 className="text-xl font-display font-bold text-white">
             {isArtistManager ? "YOUR ARTIST STUDIO" : "ARTIST ROSTER MANAGEMENT"}
           </h3>
           <p className="text-xs text-slate-400">
@@ -171,7 +171,7 @@ export const ArtistEditor: React.FC = () => {
       {(editingArtist || isCreatingNew) ? (
         <form onSubmit={handleSave} className="p-6 rounded-2xl bg-black/40 border border-gold-500/20 space-y-6">
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
-            <h4 className="font-cinzel font-bold text-white text-base flex items-center gap-2">
+            <h4 className="font-display font-bold text-white text-base flex items-center gap-2">
               <Edit2 className="w-4 h-4 text-gold-400" />
               <span>{isCreatingNew ? "Create New Artist Profile" : `Editing: ${formData.name || "Artist"}`}</span>
             </h4>
@@ -388,7 +388,7 @@ export const ArtistEditor: React.FC = () => {
           </div>
 
           <div className="space-y-3 pt-2">
-            <span className="text-[11px] font-cinzel font-bold text-gold-400 uppercase tracking-wider block">
+            <span className="text-[11px] font-display font-bold text-gold-400 uppercase tracking-wider block">
               DSP STREAMING & SOCIAL PROFILES
             </span>
 

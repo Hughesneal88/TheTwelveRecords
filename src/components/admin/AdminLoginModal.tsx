@@ -57,7 +57,7 @@ export const AdminLoginModal: React.FC = () => {
           <span className="text-[10px] font-mono uppercase tracking-[0.25em] text-gold-400 block">
             THE TWELVE RECORDS &bull; SECURE PORTAL
           </span>
-          <h3 className="text-2xl font-cinzel font-bold text-white">
+          <h3 className="text-2xl font-display font-bold text-white tracking-tight uppercase">
             LABEL PORTAL LOGIN
           </h3>
           <p className="text-xs text-slate-400 font-light">
