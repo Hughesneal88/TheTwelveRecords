@@ -2,6 +2,27 @@ import { supabase } from "./supabaseClient";
 import { LabelInfo, Artist, Release, DemoSubmission, Subscriber, AdminUser } from "../types";
 
 export const SupabaseService = {
+  // Storage Upload
+  async uploadMediaFile(file: File, folder: string = "uploads"): Promise<string | null> {
+    try {
+      const ext = file.name.split(".").pop();
+      const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${ext}`;
+      const { data, error } = await supabase.storage.from("media").upload(fileName, file, {
+        cacheControl: "3600",
+        upsert: true
+      });
+      if (error || !data) {
+        console.warn("Storage upload error, falling back:", error);
+        return null;
+      }
+      const { data: publicUrlData } = supabase.storage.from("media").getPublicUrl(fileName);
+      return publicUrlData.publicUrl;
+    } catch (err) {
+      console.warn("Upload exception:", err);
+      return null;
+    }
+  },
+
   // Label Info
   async getLabelInfo(): Promise<LabelInfo | null> {
     try {

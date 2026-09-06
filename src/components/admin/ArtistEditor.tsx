@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useContent } from "../../context/ContentContext";
 import { useAuth } from "../../context/AuthContext";
 import { Artist } from "../../types";
-import { Plus, Edit2, Trash2, Image, Link, Sparkles, Check, ArrowLeft, Upload } from "lucide-react";
+import { Plus, Edit2, Trash2, Image, Link, Sparkles, Check, ArrowLeft, Upload, Loader2 } from "lucide-react";
+import { SupabaseService } from "../../utils/supabaseSync";
 
 export const ArtistEditor: React.FC = () => {
   const { artists, addArtist, updateArtist, deleteArtist } = useContent();
   const { currentUser, canEditAllArtists } = useAuth();
 
-  // If currentUser is artist_manager, scope to their assigned artist
   const isArtistManager = currentUser?.role === "artist_manager";
   const assignedArtist = isArtistManager
     ? artists.find((a) => a.id === currentUser.assignedArtistId)
@@ -17,6 +17,7 @@ export const ArtistEditor: React.FC = () => {
   const [editingArtist, setEditingArtist] = useState<Artist | null>(assignedArtist || null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [formData, setFormData] = useState<Omit<Artist, "id">>({
     slug: "",
@@ -94,16 +95,27 @@ export const ArtistEditor: React.FC = () => {
     });
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, field: "photoUrl" | "bannerUrl") => {
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>, field: "photoUrl" | "bannerUrl") => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => {
-      if (typeof reader.result === "string") {
-        setFormData((prev) => ({ ...prev, [field]: reader.result as string }));
+    setIsUploading(true);
+
+    try {
+      const publicUrl = await SupabaseService.uploadMediaFile(file, "artists");
+      if (publicUrl) {
+        setFormData((prev) => ({ ...prev, [field]: publicUrl }));
+      } else {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (typeof reader.result === "string") {
+            setFormData((prev) => ({ ...prev, [field]: reader.result as string }));
+          }
+        };
+        reader.readAsDataURL(file);
       }
-    };
-    reader.readAsDataURL(file);
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSave = (e: React.FormEvent) => {
@@ -126,7 +138,6 @@ export const ArtistEditor: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h3 className="text-xl font-cinzel font-bold text-white">
@@ -153,11 +164,10 @@ export const ArtistEditor: React.FC = () => {
       {savedFeedback && (
         <div className="p-3.5 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-300 text-xs flex items-center gap-2 animate-in fade-in">
           <Check className="w-4 h-4 text-gold-400" />
-          <span>Artist data saved and synchronized live across the platform!</span>
+          <span>Artist data saved to Supabase cloud and synchronized live!</span>
         </div>
       )}
 
-      {/* Editor Form (When Editing or Creating) */}
       {(editingArtist || isCreatingNew) ? (
         <form onSubmit={handleSave} className="p-6 rounded-2xl bg-black/40 border border-gold-500/20 space-y-6">
           <div className="flex items-center justify-between border-b border-white/10 pb-4">
@@ -180,7 +190,6 @@ export const ArtistEditor: React.FC = () => {
             )}
           </div>
 
-          {/* Basic Fields */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <label className="block text-[11px] font-semibold text-slate-300 mb-1">
@@ -255,27 +264,27 @@ export const ArtistEditor: React.FC = () => {
             </div>
           </div>
 
-          {/* Media & Images (Hybrid: URL + Local File Upload) */}
+          {/* Media & Images */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
-            {/* Portrait Image */}
             <div className="space-y-2">
               <label className="block text-[11px] font-semibold text-slate-300">
-                Portrait Photo (Direct URL or Local File) *
+                Portrait Photo (Supabase Storage or Direct URL) *
               </label>
               <input
                 type="text"
                 value={formData.photoUrl}
                 onChange={(e) => setFormData({ ...formData, photoUrl: e.target.value })}
-                placeholder="https://images.unsplash.com/..."
+                placeholder="https://..."
                 className="w-full px-3.5 py-2 rounded-xl bg-black/60 border border-white/15 text-xs text-white focus:border-gold-400 focus:outline-none"
               />
               <div className="flex items-center gap-3">
                 <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-slate-200 text-xs flex items-center gap-1.5 transition-colors">
-                  <Upload className="w-3.5 h-3.5 text-gold-400" />
-                  <span>Upload Local File</span>
+                  {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-gold-400" /> : <Upload className="w-3.5 h-3.5 text-gold-400" />}
+                  <span>Upload to Supabase Storage</span>
                   <input
                     type="file"
                     accept="image/*"
+                    disabled={isUploading}
                     onChange={(e) => handleFileUpload(e, "photoUrl")}
                     className="hidden"
                   />
@@ -290,25 +299,25 @@ export const ArtistEditor: React.FC = () => {
               </div>
             </div>
 
-            {/* Banner Image */}
             <div className="space-y-2">
               <label className="block text-[11px] font-semibold text-slate-300">
-                Hero Banner Artwork (Direct URL or Local File) *
+                Hero Banner Artwork (Supabase Storage or Direct URL) *
               </label>
               <input
                 type="text"
                 value={formData.bannerUrl}
                 onChange={(e) => setFormData({ ...formData, bannerUrl: e.target.value })}
-                placeholder="https://images.unsplash.com/..."
+                placeholder="https://..."
                 className="w-full px-3.5 py-2 rounded-xl bg-black/60 border border-white/15 text-xs text-white focus:border-gold-400 focus:outline-none"
               />
               <div className="flex items-center gap-3">
                 <label className="cursor-pointer px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-slate-200 text-xs flex items-center gap-1.5 transition-colors">
-                  <Upload className="w-3.5 h-3.5 text-gold-400" />
-                  <span>Upload Local File</span>
+                  {isUploading ? <Loader2 className="w-3.5 h-3.5 animate-spin text-gold-400" /> : <Upload className="w-3.5 h-3.5 text-gold-400" />}
+                  <span>Upload to Supabase Storage</span>
                   <input
                     type="file"
                     accept="image/*"
+                    disabled={isUploading}
                     onChange={(e) => handleFileUpload(e, "bannerUrl")}
                     className="hidden"
                   />
@@ -324,7 +333,6 @@ export const ArtistEditor: React.FC = () => {
             </div>
           </div>
 
-          {/* Full Biography & Spiritual Calling */}
           <div>
             <label className="block text-[11px] font-semibold text-slate-300 mb-1">
               Full Artist Biography *
@@ -351,7 +359,6 @@ export const ArtistEditor: React.FC = () => {
             />
           </div>
 
-          {/* Video Spotlight & Booking */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-[11px] font-semibold text-slate-300 mb-1">
@@ -380,7 +387,6 @@ export const ArtistEditor: React.FC = () => {
             </div>
           </div>
 
-          {/* Social & DSP Streaming Handles */}
           <div className="space-y-3 pt-2">
             <span className="text-[11px] font-cinzel font-bold text-gold-400 uppercase tracking-wider block">
               DSP STREAMING & SOCIAL PROFILES
@@ -432,7 +438,6 @@ export const ArtistEditor: React.FC = () => {
             </div>
           </div>
 
-          {/* Form Actions */}
           <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
             {canEditAllArtists && (
               <button
@@ -455,7 +460,6 @@ export const ArtistEditor: React.FC = () => {
           </div>
         </form>
       ) : (
-        /* Artist Roster Table / Card Grid for Super Admin & A&R */
         <div className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {artists.map((artist) => (
