@@ -7,6 +7,7 @@ import { PageEditor } from "./PageEditor";
 import { DemosInbox } from "./DemosInbox";
 import { SubscribersView } from "./SubscribersView";
 import { AdminTeamManager } from "./AdminTeamManager";
+import { UserProfileEditor } from "./UserProfileEditor";
 import {
   X,
   Users,
@@ -18,7 +19,8 @@ import {
   Download,
   RotateCcw,
   LogOut,
-  User
+  User,
+  Settings
 } from "lucide-react";
 
 export const AdminModal: React.FC = () => {
@@ -43,7 +45,7 @@ export const AdminModal: React.FC = () => {
 
   // Active tab state
   const [activeTab, setActiveTab] = useState<
-    "artists" | "releases" | "content" | "demos" | "subscribers" | "team" | "settings"
+    "artists" | "releases" | "content" | "demos" | "subscribers" | "team" | "settings" | "profile"
   >(isArtistManager ? "artists" : "artists");
 
   if (!isAdminModalOpen || !currentUser) return null;
@@ -70,9 +72,15 @@ export const AdminModal: React.FC = () => {
                   {currentUser.role.replace("_", " ")}
                 </span>
               </div>
-              <span className="text-xs text-slate-400 font-light">
-                Logged in as <strong className="text-white font-medium">{currentUser.name}</strong> ({currentUser.email})
-              </span>
+              <button
+                onClick={() => setActiveTab("profile")}
+                className="text-left group cursor-pointer block"
+                title="Click to edit your personal profile and password"
+              >
+                <span className="text-xs text-slate-400 font-light group-hover:text-gold-400 transition-colors">
+                  Logged in as <strong className="text-white font-medium underline underline-offset-2 decoration-gold-400/50 group-hover:decoration-gold-400">{currentUser.name}</strong> ({currentUser.email})
+                </span>
+              </button>
             </div>
           </div>
 
@@ -204,6 +212,19 @@ export const AdminModal: React.FC = () => {
                 <span>Data Backup & Sync</span>
               </button>
             )}
+
+            {/* My Account & Profile Settings (Available to all logged in users) */}
+            <button
+              onClick={() => setActiveTab("profile")}
+              className={`px-4 py-3 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all w-full text-left flex-shrink-0 mt-auto pt-3 border-t border-white/5 ${
+                activeTab === "profile"
+                  ? "bg-gold-500 text-black shadow-md font-bold"
+                  : "text-slate-300 hover:bg-white/5 hover:text-white"
+              }`}
+            >
+              <User className="w-4 h-4" />
+              <span>My Account Settings</span>
+            </button>
           </div>
 
           {/* Workspace Area */}
@@ -214,6 +235,7 @@ export const AdminModal: React.FC = () => {
             {activeTab === "demos" && <DemosInbox />}
             {activeTab === "subscribers" && <SubscribersView />}
             {activeTab === "team" && <AdminTeamManager />}
+            {activeTab === "profile" && <UserProfileEditor />}
             {activeTab === "settings" && (
               <div className="space-y-6 max-w-xl">
                 <div>
