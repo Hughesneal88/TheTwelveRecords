@@ -33,8 +33,10 @@ export async function autoPopulateFromSpotifyUrl(
     // Map known IDs for 100% precision
     if (spotifyArtistId === "4tUqM99Y3aP3D6b7QfL19Y") {
       queryTerm = "allisonsaidthis";
-    } else if (spotifyArtistId === "5gR5ZtQ45lqXWlJ4a4kY5Z") {
+    } else if (spotifyArtistId === "2EyAC0DDvlmRKKO2DgijlG" || spotifyArtistId === "5gR5ZtQ45lqXWlJ4a4kY5Z") {
       queryTerm = "Kofi Raj";
+      spotifyArtistId = "2EyAC0DDvlmRKKO2DgijlG";
+      spotifyEmbed = `https://open.spotify.com/embed/artist/2EyAC0DDvlmRKKO2DgijlG?utm_source=generator&theme=0`;
     }
   } else {
     // If user passed a full URL that's not Spotify, extract name or use as search term
@@ -158,21 +160,26 @@ export async function autoPopulateFromSpotifyUrl(
 
   // Custom curated metadata if allisonsaidthis or Kofi Raj
   const slug = artistName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+  let spotifyDirectUrl = "";
 
   if (slug.includes("allison")) {
     tagline = "Spoken Word Poet & Christian Rap Pioneer";
     bio = "allisonsaidthis is a Ghanaian Christian hip hop artist, lyricist, and spoken word poet. Starting their poetic journey at the age of 8 and later honing their craft with the SCRIBES poetry movement in university, allisonsaidthis blends raw theological contemplation, intricate cadences, and soulful hip-hop rhythms. With notable projects including 'Sticky Notes', 'Taste', and 'THE QUIET BETWEEN US', their music is defined by uncompromised faith, honest vulnerability, and atmospheric storytelling.";
     audiomackUrl = "https://audiomack.com/allisonsaidthis";
-    if (!spotifyEmbed) {
-      spotifyEmbed = "https://open.spotify.com/embed/artist/4tUqM99Y3aP3D6b7QfL19Y?utm_source=generator&theme=0";
-    }
+    spotifyDirectUrl = "https://open.spotify.com/artist/4tUqM99Y3aP3D6b7QfL19Y";
+    spotifyEmbed = "https://open.spotify.com/embed/artist/4tUqM99Y3aP3D6b7QfL19Y?utm_source=generator&theme=0";
   } else if (slug.includes("kofi") || slug.includes("raj")) {
     tagline = "Ghanaian Afro-Gospel Lyricist & High-Energy Praise Minister";
     bio = "Kofi Raj is a dynamic Ghanaian gospel rapper, lyricist, and songwriter based in Accra. Renowned for his razor-sharp delivery and passionate gospel testimony, Kofi Raj frequently collaborates across the Ghanaian Christian music vanguard—including landmark joint works with Kobby Flow, Kwame Jnr, and Phil Angs on anthems like 'Fire In Me', 'Barabbas Was Me', and his solo breakthrough 'Alert'. Blending contemporary Ghanaian drill and Afrobeat rhythms with unwavering kingdom messages, Kofi Raj is empowering a new generation to praise with bold conviction.";
     audiomackUrl = "https://audiomack.com/kofiraj";
-    if (!spotifyEmbed) {
-      spotifyEmbed = "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0";
-    }
+    spotifyDirectUrl = "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG";
+    spotifyEmbed = "https://open.spotify.com/embed/artist/2EyAC0DDvlmRKKO2DgijlG?utm_source=generator&theme=0";
+  } else if (spotifyArtistId) {
+    spotifyDirectUrl = `https://open.spotify.com/artist/${spotifyArtistId}`;
+  } else if (cleanInput.includes("open.spotify.com/artist/")) {
+    spotifyDirectUrl = cleanInput.split("?")[0];
+  } else {
+    spotifyDirectUrl = `https://open.spotify.com/artist/${spotifyArtistId || slug}`;
   }
 
   const totalTracks = releases.reduce((sum, r) => sum + r.tracks.length, 0);
@@ -189,7 +196,7 @@ export async function autoPopulateFromSpotifyUrl(
       bio: bio,
       embedUrl: spotifyEmbed || undefined,
       socials: {
-        spotify: cleanInput.includes("spotify.com") ? cleanInput : `https://open.spotify.com/search/${encodeURIComponent(artistName)}`,
+        spotify: spotifyDirectUrl,
         appleMusic: appleMusicUrl || undefined,
         audiomack: audiomackUrl || undefined,
         boomplay: `https://www.boomplay.com/search/all?searchName=${encodeURIComponent(artistName)}`,

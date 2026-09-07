@@ -134,10 +134,10 @@ export const initialArtists: Artist[] = [
     bio: "Kofi Raj is a dynamic Ghanaian gospel rapper, lyricist, and songwriter based in Accra. Renowned for his razor-sharp delivery and passionate gospel testimony, Kofi Raj frequently collaborates across the Ghanaian Christian music vanguard—including landmark joint works with Kobby Flow, Kwame Jnr, and Phil Angs on anthems like 'Fire In Me', 'Barabbas Was Me', and his solo breakthrough 'Alert'. Blending contemporary Ghanaian drill and Afrobeat rhythms with unwavering kingdom messages, Kofi Raj is empowering a new generation to praise with bold conviction.",
     ministryVision: "Taking the gospel to the streets and the nations through relentless energy, authentic truth, and unapologetic praise.",
     featuredVideoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
-    embedUrl: "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0",
+    embedUrl: "https://open.spotify.com/embed/artist/2EyAC0DDvlmRKKO2DgijlG?utm_source=generator&theme=0",
     isFeatured: true,
     socials: {
-      spotify: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+      spotify: "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG",
       appleMusic: "https://music.apple.com/us/artist/kofi-raj/1545624892",
       boomplay: "https://www.boomplay.com/artists/21893892",
       audiomack: "https://audiomack.com/kofiraj",
@@ -266,7 +266,7 @@ export const initialReleases: Release[] = [
     genre: "Afro-Gospel / Drill",
     format: "Single",
     coverUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80",
-    embedUrl: "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0",
+    embedUrl: "https://open.spotify.com/embed/artist/2EyAC0DDvlmRKKO2DgijlG?utm_source=generator&theme=0",
     description: "Kofi Raj’s explosive breakthrough single delivering high-energy gospel rhymes with heavy West African 808 percussion.",
     tracks: [
       {
@@ -276,7 +276,7 @@ export const initialReleases: Release[] = [
         synthTheme: "praise"
       }
     ],
-    spotifyUrl: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+    spotifyUrl: "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG",
     appleMusicUrl: "https://music.apple.com/us/artist/kofi-raj/1545624892",
     boomplayUrl: "https://boomplay.com/artists/21893892",
     audiomackUrl: "https://audiomack.com/kofiraj",
@@ -303,7 +303,7 @@ export const initialReleases: Release[] = [
         synthTheme: "praise"
       }
     ],
-    spotifyUrl: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+    spotifyUrl: "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG",
     appleMusicUrl: "https://music.apple.com/us/artist/kofi-raj/1545624892",
     boomplayUrl: "https://boomplay.com/artists/21893892",
     audiomackUrl: "https://audiomack.com/kobbyflow/song/fire-in-me",
@@ -320,7 +320,7 @@ export const initialReleases: Release[] = [
     genre: "Afro-Gospel / Drill",
     format: "EP",
     coverUrl: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=80",
-    embedUrl: "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0",
+    embedUrl: "https://open.spotify.com/embed/artist/2EyAC0DDvlmRKKO2DgijlG?utm_source=generator&theme=0",
     description: "A profound lyrical masterpiece on substituted grace, the cross, and victorious salvation featuring Ozzy Music & Erady.",
     tracks: [
       {
@@ -342,7 +342,7 @@ export const initialReleases: Release[] = [
         synthTheme: "praise"
       }
     ],
-    spotifyUrl: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+    spotifyUrl: "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG",
     appleMusicUrl: "https://music.apple.com/us/artist/kofi-raj/1545624892",
     boomplayUrl: "https://boomplay.com/artists/21893892",
     audiomackUrl: "https://audiomack.com/kofiraj",

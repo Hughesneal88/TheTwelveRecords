@@ -27,7 +27,33 @@ export const saveLabelInfo = (info: LabelInfo) => {
 export const getStoredArtists = (): Artist[] => {
   try {
     const data = localStorage.getItem(KEYS.ARTISTS);
-    return data ? JSON.parse(data) : initialArtists;
+    if (data) {
+      const parsed: Artist[] = JSON.parse(data);
+      return parsed.map((a) => {
+        if (a.slug === "kofi-raj" || a.name.toLowerCase().includes("kofi")) {
+          return {
+            ...a,
+            embedUrl: "https://open.spotify.com/embed/artist/2EyAC0DDvlmRKKO2DgijlG?utm_source=generator&theme=0",
+            socials: {
+              ...a.socials,
+              spotify: "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG"
+            }
+          };
+        }
+        if (a.slug === "allisonsaidthis" || a.name.toLowerCase().includes("allison")) {
+          return {
+            ...a,
+            embedUrl: "https://open.spotify.com/embed/artist/4tUqM99Y3aP3D6b7QfL19Y?utm_source=generator&theme=0",
+            socials: {
+              ...a.socials,
+              spotify: "https://open.spotify.com/artist/4tUqM99Y3aP3D6b7QfL19Y"
+            }
+          };
+        }
+        return a;
+      });
+    }
+    return initialArtists;
   } catch {
     return initialArtists;
   }
@@ -40,7 +66,24 @@ export const saveArtists = (artists: Artist[]) => {
 export const getStoredReleases = (): Release[] => {
   try {
     const data = localStorage.getItem(KEYS.RELEASES);
-    return data ? JSON.parse(data) : initialReleases;
+    if (data) {
+      const parsed: Release[] = JSON.parse(data);
+      return parsed.map((r) => {
+        if (r.artistName.toLowerCase().includes("kofi")) {
+          return {
+            ...r,
+            spotifyUrl: r.spotifyUrl?.includes("spotify.com")
+              ? r.spotifyUrl.replace("5gR5ZtQ45lqXWlJ4a4kY5Z", "2EyAC0DDvlmRKKO2DgijlG")
+              : "https://open.spotify.com/artist/2EyAC0DDvlmRKKO2DgijlG",
+            embedUrl: r.embedUrl?.includes("spotify.com")
+              ? r.embedUrl.replace("5gR5ZtQ45lqXWlJ4a4kY5Z", "2EyAC0DDvlmRKKO2DgijlG")
+              : r.embedUrl
+          };
+        }
+        return r;
+      });
+    }
+    return initialReleases;
   } catch {
     return initialReleases;
   }
