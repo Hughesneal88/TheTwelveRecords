@@ -2,13 +2,13 @@ import { LabelInfo, Artist, Release, DemoSubmission, Subscriber, AdminUser } fro
 import { initialLabelInfo, initialArtists, initialReleases, initialDemos, initialSubscribers, initialAdminUsers } from "./initialData";
 
 const KEYS = {
-  LABEL_INFO: "ttr_label_info_v1",
-  ARTISTS: "ttr_artists_v1",
-  RELEASES: "ttr_releases_v1",
-  DEMOS: "ttr_demos_v1",
-  SUBSCRIBERS: "ttr_subscribers_v1",
-  ADMIN_USERS: "ttr_admin_users_v1",
-  CURRENT_USER: "ttr_current_user_v1"
+  LABEL_INFO: "ttr_label_info_v2",
+  ARTISTS: "ttr_artists_v2",
+  RELEASES: "ttr_releases_v2",
+  DEMOS: "ttr_demos_v2",
+  SUBSCRIBERS: "ttr_subscribers_v2",
+  ADMIN_USERS: "ttr_admin_users_v2",
+  CURRENT_USER: "ttr_current_user_v2"
 };
 
 export const getStoredLabelInfo = (): LabelInfo => {

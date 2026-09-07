@@ -11,22 +11,22 @@ export const initialLabelInfo: LabelInfo = {
   pressEmail: "press@thetwelverecords.com",
   phone: "+233 24 000 1212",
   heroHeadline: "PIONEERING FAITH & SOUND",
-  heroSubheadline: "From the vibrant heart of Accra to the global stage — redefining Afro-Gospel, Contemporary Worship, and Kingdom sound with sonic excellence and spiritual depth.",
+  heroSubheadline: "From the vibrant heart of Accra to the global stage — redefining Afro-Gospel, Christian Hip Hop, and Kingdom sound with sonic excellence and spiritual depth.",
   aboutStory: [
     "Born in Accra, Ghana, The Twelve Records is a visionary Christian record label and creative house dedicated to stewarding authentic Kingdom sounds that transcend geographical and cultural borders.",
-    "Rooted in the rich rhythmic heritage of West Africa and propelled by world-class production, we partner with gospel pioneers, worship leaders, and vocalists to create music that impacts eternity.",
-    "From intimate acoustic worship sessions in Accra sanctuaries to thunderous praise anthems resounding across stadiums globally, our heartbeat remains constant: Christ exalted through uncompromised artistry."
+    "Rooted in the rich rhythmic heritage of West Africa and propelled by world-class production, we partner with gospel pioneers, lyricists, and worship leaders to create music that impacts eternity.",
+    "From spoken-word contemplation and high-energy drill praise in Accra sanctuaries to gospel anthems resounding across streaming platforms globally, our heartbeat remains constant: Christ exalted through uncompromised artistry."
   ],
   aboutMission: "Empowering spirit-filled African artists with world-class production, strategic global DSP distribution, and uncompromising spiritual integrity.",
   demoPolicy: {
     guidelines: [
-      "We accept original Christian music across Afro-Gospel, Contemporary Worship, Christian Hip Hop, and Gospel Highlife.",
+      "We accept original Christian music across Afro-Gospel, Contemporary Worship, Christian Hip Hop, and Spoken Word.",
       "Submit private streaming links only (SoundCloud, Dropbox, or Google Drive). Do NOT attach raw MP3 files directly.",
       "Include 2 to 3 of your strongest unreleased tracks or recent singles.",
       "Share your personal ministry vision, church/fellowship background, and what drives your sound."
     ],
     responseTime: "Our A&R team listens to every submission within 14 business days.",
-    acceptedFormats: ["Private SoundCloud Playlist", "Dropbox Folder Link", "Google Drive Shared Folder", "Disco.ac"]
+    acceptedFormats: ["Private SoundCloud Playlist", "Dropbox Folder Link", "Google Drive Shared Folder", "Audiomack Private Link", "Disco.ac"]
   },
   socials: {
     instagram: "https://instagram.com/thetwelverecords",
@@ -72,23 +72,23 @@ export const initialAdminUsers: AdminUser[] = [
   },
   {
     id: "admin-4",
-    name: "Kofi Owusu (Artist Access)",
-    email: "artist.kofi@thetwelverecords.com",
+    name: "allisonsaidthis (Artist Access)",
+    email: "artist.allison@thetwelverecords.com",
     passwordHash: "TwelveArtist2026!",
     role: "artist_manager",
     assignedArtistId: "artist-1",
-    avatarUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=80",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=80",
     lastLogin: new Date().toISOString(),
     createdAt: "2026-02-10T00:00:00Z"
   },
   {
     id: "admin-5",
-    name: "Ama Grace (Artist Access)",
-    email: "artist.ama@thetwelverecords.com",
+    name: "Kofi Raj (Artist Access)",
+    email: "artist.kofi@thetwelverecords.com",
     passwordHash: "TwelveArtist2026!",
     role: "artist_manager",
     assignedArtistId: "artist-2",
-    avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=80",
+    avatarUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=80",
     lastLogin: new Date().toISOString(),
     createdAt: "2026-02-15T00:00:00Z"
   }
@@ -97,42 +97,41 @@ export const initialAdminUsers: AdminUser[] = [
 export const initialArtists: Artist[] = [
   {
     id: "artist-1",
-    slug: "kofi-owusu",
-    name: "Kofi Owusu",
-    realName: "Kofi Owusu-Ansah",
-    tagline: "Afro-Gospel Pioneer & Highlife Praise Leader",
-    genre: "Afro-Gospel / Highlife Praise",
+    slug: "allisonsaidthis",
+    name: "allisonsaidthis",
+    realName: "Allison",
+    tagline: "Spoken Word Poet & Christian Rap Pioneer",
+    genre: "Christian Hip Hop / Spoken Word",
     origin: "Accra, Ghana",
-    photoUrl: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=800&q=80",
-    bannerUrl: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1600&q=80",
-    bio: "Kofi Owusu is a central figure in the contemporary West African gospel renaissance. Infusing driving Ghanaian percussion, vibrant brass lines, and an unshakeable message of redemption, his songs have sparked vibrant praise across churches and festivals throughout Africa, the UK, and North America.",
-    ministryVision: "To ignite a generation with joyful, Spirit-filled praise that celebrates God's unfailing grace in every season of life.",
+    photoUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+    bannerUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&q=80",
+    bio: "allisonsaidthis is a Ghanaian Christian hip hop artist, lyricist, and spoken word poet. Starting their poetic journey at the age of 8 and later honing their craft with the SCRIBES poetry movement in university, allisonsaidthis blends raw theological contemplation, intricate cadences, and soulful hip-hop rhythms. With notable projects including the 2025 release 'Sticky Notes' and 2026 singles 'Taste' and 'KAIZEN', their music is defined by uncompromised faith, honest vulnerability, and atmospheric storytelling.",
+    ministryVision: "To turn spoken truth into rhythm, ministering to the quiet spaces of the soul where faith meets life.",
     featuredVideoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     isFeatured: true,
     socials: {
       spotify: "https://open.spotify.com",
       appleMusic: "https://music.apple.com",
       boomplay: "https://boomplay.com",
-      audiomack: "https://audiomack.com",
+      audiomack: "https://audiomack.com/allisonsaidthis",
       youtube: "https://youtube.com",
-      instagram: "https://instagram.com/kofiowusumusic",
-      tiktok: "https://tiktok.com/@kofiowusu"
+      instagram: "https://instagram.com/allisonsaidthis"
     },
-    releaseIds: ["rel-1", "rel-4"],
-    bookingEmail: "kofi.bookings@thetwelverecords.com"
+    releaseIds: ["rel-1", "rel-2", "rel-3"],
+    bookingEmail: "allison.bookings@thetwelverecords.com"
   },
   {
     id: "artist-2",
-    slug: "ama-grace",
-    name: "Ama Grace",
-    realName: "Ama Grace Addo",
-    tagline: "Intimate Contemporary Worship & Soulful Vocals",
-    genre: "Contemporary Worship / Soul",
-    origin: "Accra & Cape Coast, Ghana",
-    photoUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80",
+    slug: "kofi-raj",
+    name: "Kofi Raj",
+    realName: "Kofi Raj",
+    tagline: "Ghanaian Afro-Gospel Lyricist & High-Energy Praise Minister",
+    genre: "Afro-Gospel / Christian Rap",
+    origin: "Accra, Ghana",
+    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80",
     bannerUrl: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1600&q=80",
-    bio: "Ama Grace is celebrated for her soaring, velvety vocal tone and deeply meditative lyricism. Her live acoustic worship sessions, recorded in Accra, have become quiet sanctuaries for believers seeking deep spiritual renewal and peace.",
-    ministryVision: "Leading listeners into the secret place of divine intimacy through raw, unvarnished worship and prayers of surrender.",
+    bio: "Kofi Raj is a dynamic Ghanaian gospel rapper, lyricist, and songwriter based in Accra. Renowned for his razor-sharp delivery and passionate gospel testimony, Kofi Raj frequently collaborates across the Ghanaian Christian music vanguard—including landmark joint works with Kobby Flow, Kwame Jnr, and Phil Angs on anthems like 'Fire In Me', 'Barabbas Was Me', and his solo breakthrough 'Alert'. Blending contemporary Ghanaian drill and Afrobeat rhythms with unwavering kingdom messages, Kofi Raj is empowering a new generation to praise with bold conviction.",
+    ministryVision: "Taking the gospel to the streets and the nations through relentless energy, authentic truth, and unapologetic praise.",
     featuredVideoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
     isFeatured: true,
     socials: {
@@ -141,58 +140,10 @@ export const initialArtists: Artist[] = [
       boomplay: "https://boomplay.com",
       audiomack: "https://audiomack.com",
       youtube: "https://youtube.com",
-      instagram: "https://instagram.com/amagraceworship"
+      instagram: "https://instagram.com/kofirajmusic"
     },
-    releaseIds: ["rel-2"],
-    bookingEmail: "ama.bookings@thetwelverecords.com"
-  },
-  {
-    id: "artist-3",
-    slug: "the-twelve-collective",
-    name: "The Twelve Worship Collective",
-    realName: "The Twelve Collective Ensemble",
-    tagline: "Symphonic Afro-Worship & Stadium Anthems",
-    genre: "Symphonic Worship / Choral Gospel",
-    origin: "Accra, Ghana",
-    photoUrl: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=80",
-    bannerUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&q=80",
-    bio: "A dynamic collective of 24 vocalists and instrumentalists based in Accra. Combining indigenous Ghanaian languages (Twi, Ga, Ewe) with soaring orchestral arrangements, The Twelve Worship Collective embodies the heartbeat of communal revival.",
-    ministryVision: "Uniting the global body of Christ through authentic African choral majesty and Spirit-led declarations.",
-    isFeatured: true,
-    socials: {
-      spotify: "https://open.spotify.com",
-      appleMusic: "https://music.apple.com",
-      boomplay: "https://boomplay.com",
-      audiomack: "https://audiomack.com",
-      youtube: "https://youtube.com",
-      instagram: "https://instagram.com/thetwelveworship"
-    },
-    releaseIds: ["rel-3"],
-    bookingEmail: "collective@thetwelverecords.com"
-  },
-  {
-    id: "artist-4",
-    slug: "jeremiah-asare",
-    name: "Jeremiah Asare",
-    realName: "Jeremiah Asare-Bediako",
-    tagline: "Urban Afro-Fusion & Christian Hip Hop",
-    genre: "Christian Hip Hop / Afro-Fusion",
-    origin: "Kumasi & Accra, Ghana",
-    photoUrl: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=800&q=80",
-    bannerUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=1600&q=80",
-    bio: "With razor-sharp lyricism, drill-infused drums, and honest testimonies of transformation, Jeremiah Asare represents the new wave of African urban Christian music engaging youth culture with bold truth.",
-    ministryVision: "Reaching urban youth, campus communities, and the global diaspora with the uncompromising Gospel of grace.",
-    isFeatured: false,
-    socials: {
-      spotify: "https://open.spotify.com",
-      appleMusic: "https://music.apple.com",
-      boomplay: "https://boomplay.com",
-      audiomack: "https://audiomack.com",
-      youtube: "https://youtube.com",
-      instagram: "https://instagram.com/jeremiahasare_chh"
-    },
-    releaseIds: ["rel-5"],
-    bookingEmail: "jeremiah.bookings@thetwelverecords.com"
+    releaseIds: ["rel-4", "rel-5", "rel-6"],
+    bookingEmail: "kofi.bookings@thetwelverecords.com"
   }
 ];
 
@@ -200,109 +151,121 @@ export const initialReleases: Release[] = [
   {
     id: "rel-1",
     catalogNumber: "TTR-001",
-    title: "Onyame Noko (God of Wonders)",
+    title: "Sticky Notes",
     artistId: "artist-1",
-    artistName: "Kofi Owusu",
-    releaseDate: "2026-02-14",
-    genre: "Afro-Gospel / Highlife Praise",
-    format: "Single",
+    artistName: "allisonsaidthis",
+    releaseDate: "2025-12-25",
+    genre: "Christian Hip Hop / Spoken Word",
+    format: "Album",
     coverUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80",
-    description: "An explosive high-energy celebration of God’s miracle-working power, blending Accra brass lines with talking drums and irresistible praise.",
+    description: "The seminal body of work by allisonsaidthis, exploring faith, growth, and divine grace through intricate spoken word poetry and soulful hip hop production.",
     tracks: [
       {
         id: "trk-101",
-        title: "Onyame Noko (God of Wonders)",
-        duration: "4:12",
+        title: "HIGHS AND LOWS",
+        duration: "3:24",
         synthTheme: "afrogospel",
-        lyrics: "Onyame noko a Otumi ye! (There is nothing God cannot do!) In the fire, in the flood, You remain faithful."
+        lyrics: "Through every high and every valley low, You remain the anchor that holds my soul."
       },
       {
         id: "trk-102",
-        title: "Onyame Noko (Instrumental Praise)",
-        duration: "4:12",
-        synthTheme: "praise"
+        title: "PATIENCE (feat. KQ The Artist)",
+        duration: "3:42",
+        synthTheme: "ambient"
+      },
+      {
+        id: "trk-103",
+        title: "21st Birthday",
+        duration: "3:15",
+        synthTheme: "worship"
+      },
+      {
+        id: "trk-104",
+        title: "Sticky Notes Outro",
+        duration: "2:50",
+        synthTheme: "ambient"
       }
     ],
     spotifyUrl: "https://open.spotify.com",
     appleMusicUrl: "https://music.apple.com",
     boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com",
+    audiomackUrl: "https://audiomack.com/allisonsaidthis/album/sticky-notes",
     youtubeUrl: "https://youtube.com",
     isFeatured: true
   },
   {
     id: "rel-2",
     catalogNumber: "TTR-002",
-    title: "Rivers in the Desert EP",
-    artistId: "artist-2",
-    artistName: "Ama Grace",
-    releaseDate: "2026-03-01",
-    genre: "Contemporary Worship / Soul",
-    format: "EP",
-    coverUrl: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=800&q=80",
-    description: "A 4-track acoustic pilgrimage of surrender and divine encounter, recorded live in an intimate sanctuary in Osu, Accra.",
+    title: "Taste",
+    artistId: "artist-1",
+    artistName: "allisonsaidthis",
+    releaseDate: "2026-03-15",
+    genre: "Christian Hip Hop",
+    format: "Single",
+    coverUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+    description: "A vibrant, faith-fueled declaration inspired by Psalm 34:8 — Taste and see that the Lord is good.",
     tracks: [
       {
         id: "trk-201",
-        title: "Surrender All (Live in Accra)",
-        duration: "5:28",
-        synthTheme: "worship",
-        lyrics: "Take my life, a living sacrifice. Here at Your feet, I lay my crowns down."
-      },
-      {
-        id: "trk-202",
-        title: "Rivers Flow",
-        duration: "4:45",
-        synthTheme: "worship"
-      },
-      {
-        id: "trk-203",
-        title: "Living Water (Interlude)",
-        duration: "2:15",
-        synthTheme: "ambient"
-      },
-      {
-        id: "trk-204",
-        title: "Everlasting Light",
-        duration: "5:02",
-        synthTheme: "worship"
+        title: "Taste",
+        duration: "3:12",
+        synthTheme: "afrogospel"
       }
     ],
     spotifyUrl: "https://open.spotify.com",
     appleMusicUrl: "https://music.apple.com",
     boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com",
+    audiomackUrl: "https://audiomack.com/allisonsaidthis",
     isFeatured: true
   },
   {
     id: "rel-3",
     catalogNumber: "TTR-003",
-    title: "Sons of Thunder (Live at National Theatre)",
-    artistId: "artist-3",
-    artistName: "The Twelve Worship Collective",
-    releaseDate: "2026-04-10",
-    genre: "Symphonic Worship",
-    format: "Album",
+    title: "THE QUIET BETWEEN US (KAIZEN)",
+    artistId: "artist-1",
+    artistName: "allisonsaidthis",
+    releaseDate: "2026-08-28",
+    genre: "Spoken Word / Hip Hop",
+    format: "EP",
     coverUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
-    description: "Recorded live before 3,000 worshippers at the National Theatre in Accra. Capturing the raw spiritual fire and choral majesty of Ghanaian praise.",
+    description: "A meditative and contemplative EP featuring 'KAIZEN' and 'Thoughts in the rain', exploring continual spiritual refinement.",
     tracks: [
       {
         id: "trk-301",
-        title: "Lion of Judah (Awurade Basa)",
-        duration: "6:40",
-        synthTheme: "praise"
+        title: "KAIZEN",
+        duration: "3:30",
+        synthTheme: "afrogospel"
       },
       {
         id: "trk-302",
-        title: "Holy Are You Lord (Ga & English Anthem)",
-        duration: "7:12",
-        synthTheme: "worship"
-      },
-      {
-        id: "trk-303",
-        title: "Ancient of Days Reprise",
-        duration: "4:50",
+        title: "Thoughts in the rain",
+        duration: "3:45",
         synthTheme: "ambient"
+      }
+    ],
+    spotifyUrl: "https://open.spotify.com",
+    appleMusicUrl: "https://music.apple.com",
+    boomplayUrl: "https://boomplay.com",
+    audiomackUrl: "https://audiomack.com/allisonsaidthis",
+    isFeatured: false
+  },
+  {
+    id: "rel-4",
+    catalogNumber: "TTR-004",
+    title: "Alert",
+    artistId: "artist-2",
+    artistName: "Kofi Raj",
+    releaseDate: "2022-11-10",
+    genre: "Afro-Gospel / Drill",
+    format: "Single",
+    coverUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80",
+    description: "Kofi Raj’s explosive breakthrough single delivering high-energy gospel rhymes with heavy West African 808 percussion.",
+    tracks: [
+      {
+        id: "trk-401",
+        title: "Alert",
+        duration: "3:38",
+        synthTheme: "praise"
       }
     ],
     spotifyUrl: "https://open.spotify.com",
@@ -312,50 +275,65 @@ export const initialReleases: Release[] = [
     isFeatured: true
   },
   {
-    id: "rel-4",
-    catalogNumber: "TTR-004",
-    title: "Grace Abounds (Accra Sunset Mix)",
-    artistId: "artist-1",
-    artistName: "Kofi Owusu",
-    releaseDate: "2026-05-02",
-    genre: "Afro-Gospel",
-    format: "Single",
-    coverUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
-    description: "Sun-drenched chords and infectious optimism that celebrates every new morning in Christ.",
-    tracks: [
-      {
-        id: "trk-401",
-        title: "Grace Abounds",
-        duration: "3:35",
-        synthTheme: "afrogospel"
-      }
-    ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
-    isFeatured: false
-  },
-  {
     id: "rel-5",
     catalogNumber: "TTR-005",
-    title: "Light & Salt",
-    artistId: "artist-4",
-    artistName: "Jeremiah Asare",
-    releaseDate: "2026-05-20",
-    genre: "Christian Hip Hop",
+    title: "Fire In Me",
+    artistId: "artist-2",
+    artistName: "Kofi Raj",
+    releaseDate: "2024-05-18",
+    genre: "Afro-Gospel",
     format: "Single",
-    coverUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80",
-    description: "Hard-hitting 808s and unapologetic gospel bars speaking life into the streets of Accra and beyond.",
+    coverUrl: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=800&q=80",
+    description: "Electrifying praise collaboration featuring Kobby Flow and Kwame Jnr, igniting the believer's inner passion for God.",
     tracks: [
       {
         id: "trk-501",
-        title: "Light & Salt",
-        duration: "3:18",
-        synthTheme: "afrogospel"
+        title: "Fire In Me (feat. Kwame Jnr & Kobby Flow)",
+        duration: "3:52",
+        synthTheme: "praise"
       }
     ],
     spotifyUrl: "https://open.spotify.com",
     appleMusicUrl: "https://music.apple.com",
     boomplayUrl: "https://boomplay.com",
+    audiomackUrl: "https://audiomack.com",
+    isFeatured: true
+  },
+  {
+    id: "rel-6",
+    catalogNumber: "TTR-006",
+    title: "Barabbas Was Me (The Redemption Anthems)",
+    artistId: "artist-2",
+    artistName: "Kofi Raj",
+    releaseDate: "2026-04-12",
+    genre: "Afro-Gospel / Drill",
+    format: "EP",
+    coverUrl: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=80",
+    description: "A profound lyrical masterpiece on substituted grace, the cross, and victorious salvation featuring Ozzy Music & Erady.",
+    tracks: [
+      {
+        id: "trk-601",
+        title: "Barabbas Was Me (feat. Ozzy Music & Erady)",
+        duration: "4:05",
+        synthTheme: "afrogospel"
+      },
+      {
+        id: "trk-602",
+        title: "Peace, Be Still (feat. Ozzy Music)",
+        duration: "4:18",
+        synthTheme: "worship"
+      },
+      {
+        id: "trk-603",
+        title: "Ogeneh Doh (feat. Treasure Music)",
+        duration: "3:40",
+        synthTheme: "praise"
+      }
+    ],
+    spotifyUrl: "https://open.spotify.com",
+    appleMusicUrl: "https://music.apple.com",
+    boomplayUrl: "https://boomplay.com",
+    audiomackUrl: "https://audiomack.com",
     isFeatured: false
   }
 ];

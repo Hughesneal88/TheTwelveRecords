@@ -144,11 +144,11 @@ export const AdminLoginModal: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => handleQuickLogin("press@thetwelverecords.com", "TwelveMedia2026!")}
+              onClick={() => handleQuickLogin("artist.allison@thetwelverecords.com", "TwelveArtist2026!")}
               className="p-2 rounded-lg bg-white/5 hover:bg-gold-500/20 text-slate-200 hover:text-gold-300 border border-white/10 text-left transition-colors"
             >
-              <div className="font-semibold text-gold-400">Marketing Lead</div>
-              <div className="text-[10px] text-slate-400">Page Copy & Fans</div>
+              <div className="font-semibold text-gold-400">allisonsaidthis</div>
+              <div className="text-[10px] text-slate-400">Artist Profile Edit</div>
             </button>
 
             <button
@@ -156,8 +156,8 @@ export const AdminLoginModal: React.FC = () => {
               onClick={() => handleQuickLogin("artist.kofi@thetwelverecords.com", "TwelveArtist2026!")}
               className="p-2 rounded-lg bg-white/5 hover:bg-gold-500/20 text-slate-200 hover:text-gold-300 border border-white/10 text-left transition-colors"
             >
-              <div className="font-semibold text-gold-400">Artist: Kofi Owusu</div>
-              <div className="text-[10px] text-slate-400">Scoped Profile Edit</div>
+              <div className="font-semibold text-gold-400">Kofi Raj</div>
+              <div className="text-[10px] text-slate-400">Artist Profile Edit</div>
             </button>
           </div>
         </div>
