@@ -1,19 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { useContent } from "../../context/ContentContext";
 import { Release, Track, ReleaseFormat } from "../../types";
-import { Plus, Edit2, Trash2, Disc, Music, Check, ArrowLeft, Upload, Sparkles, Loader2, Play, Pause } from "lucide-react";
-import { autoPopulateReleaseFromUrl } from "../../utils/spotifyImporter";
+import { Plus, Edit2, Trash2, Disc, Music, Check, ArrowLeft, Upload, Sparkles, Loader2, Play, Pause, Search, Filter } from "lucide-react";
+import { autoPopulateReleaseFromUrl, importDiscographyForArtist } from "../../utils/spotifyImporter";
 import { SupabaseService } from "../../utils/supabaseSync";
 
 export const ReleaseEditor: React.FC = () => {
-  const { releases, artists, addRelease, updateRelease, deleteRelease } = useContent();
+  const { releases, artists, addRelease, updateRelease, deleteRelease, updateArtist } = useContent();
 
   const [editingRelease, setEditingRelease] = useState<Release | null>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [savedFeedback, setSavedFeedback] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
-  // Spotify auto-population states
+  // Full Discography Importer states
+  const [discographyTargetArtistId, setDiscographyTargetArtistId] = useState<string>(artists[0]?.id || "custom");
+  const [discographyInput, setDiscographyInput] = useState<string>(artists[0]?.socials?.spotify || artists[0]?.name || "");
+  const [isImportingFullDiscography, setIsImportingFullDiscography] = useState(false);
+  const [discographyImportSummary, setDiscographyImportSummary] = useState<{
+    artistName: string;
+    releasesImported: number;
+    tracksImported: number;
+  } | null>(null);
+  const [discographyImportError, setDiscographyImportError] = useState<string | null>(null);
+
+  // Catalog Filter & Search states
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedArtistFilter, setSelectedArtistFilter] = useState("all");
+  const [selectedFormatFilter, setSelectedFormatFilter] = useState("all");
+
+  // Single Release auto-population states
   const [spotifyInput, setSpotifyInput] = useState("");
   const [isImportingSpotify, setIsImportingSpotify] = useState(false);
   const [importFeedback, setImportFeedback] = useState<string | null>(null);
@@ -46,6 +62,95 @@ export const ReleaseEditor: React.FC = () => {
     youtubeUrl: "",
     isFeatured: false
   });
+
+  // Filtered releases list
+  const filteredReleases = useMemo(() => {
+    return releases.filter((r) => {
+      const matchesSearch =
+        r.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.artistName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        r.catalogNumber.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesArtist =
+        selectedArtistFilter === "all" ||
+        r.artistId === selectedArtistFilter ||
+        r.artistName.toLowerCase() === selectedArtistFilter.toLowerCase();
+
+      const matchesFormat =
+        selectedFormatFilter === "all" || r.format === selectedFormatFilter;
+
+      return matchesSearch && matchesArtist && matchesFormat;
+    });
+  }, [releases, searchQuery, selectedArtistFilter, selectedFormatFilter]);
+
+  const handleArtistSelectChange = (artistId: string) => {
+    setDiscographyTargetArtistId(artistId);
+    if (artistId === "custom") {
+      setDiscographyInput("");
+    } else {
+      const matched = artists.find((a) => a.id === artistId);
+      if (matched) {
+        setDiscographyInput(matched.socials?.spotify || matched.name);
+      }
+    }
+  };
+
+  const handleImportFullDiscography = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!discographyInput.trim() && discographyTargetArtistId === "custom") return;
+
+    setIsImportingFullDiscography(true);
+    setDiscographyImportError(null);
+    setDiscographyImportSummary(null);
+
+    try {
+      const matchedArtist = artists.find((a) => a.id === discographyTargetArtistId);
+      const targetArtistId = matchedArtist ? matchedArtist.id : `artist-${Date.now()}`;
+      const targetArtistName = matchedArtist ? matchedArtist.name : discographyInput.trim();
+
+      const query = discographyInput.trim() || targetArtistName;
+
+      const result = await importDiscographyForArtist(
+        targetArtistId,
+        targetArtistName,
+        query,
+        releases.length
+      );
+
+      if (!result.releases || result.releases.length === 0) {
+        setDiscographyImportError(`No releases found for "${query}". Please check the Spotify URL or artist name.`);
+        return;
+      }
+
+      const createdReleaseIds: string[] = [];
+      for (const rel of result.releases) {
+        const newRel = addRelease({
+          ...rel,
+          artistId: targetArtistId,
+          artistName: targetArtistName
+        });
+        createdReleaseIds.push(newRel.id);
+      }
+
+      // Link newly created releases to the artist record
+      if (matchedArtist && createdReleaseIds.length > 0) {
+        const existingIds = matchedArtist.releaseIds || [];
+        const updatedIds = Array.from(new Set([...existingIds, ...createdReleaseIds]));
+        updateArtist(matchedArtist.id, { releaseIds: updatedIds });
+      }
+
+      setDiscographyImportSummary({
+        artistName: targetArtistName,
+        releasesImported: result.releases.length,
+        tracksImported: result.importedTrackCount
+      });
+      setDiscographyInput("");
+    } catch (err: any) {
+      setDiscographyImportError(err?.message || "Failed to import discography.");
+    } finally {
+      setIsImportingFullDiscography(false);
+    }
+  };
 
   const handleStartEdit = (release: Release) => {
     setEditingRelease(release);
@@ -231,7 +336,7 @@ export const ReleaseEditor: React.FC = () => {
             DISCOGRAPHY & CATALOG MANAGEMENT
           </h3>
           <p className="text-xs text-slate-400">
-            Manage singles, worship EPs, albums, catalog numbers, tracklists, and streaming URLs.
+            Import full artist discographies, manage catalog releases (`TTR-001...`), tracklists, high-res artwork, and live Spotify embeds.
           </p>
         </div>
 
@@ -247,9 +352,100 @@ export const ReleaseEditor: React.FC = () => {
       </div>
 
       {savedFeedback && (
-        <div className="p-3.5 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-300 text-xs flex items-center gap-2">
+        <div className="p-3.5 rounded-xl bg-gold-500/15 border border-gold-500/40 text-gold-300 text-xs flex items-center gap-2 animate-in fade-in">
           <Check className="w-4 h-4 text-gold-400" />
           <span>Release catalog updated and synchronized live!</span>
+        </div>
+      )}
+
+      {/* Standalone Full Discography Importer on Discography Page */}
+      {!editingRelease && !isCreatingNew && (
+        <div className="p-5 rounded-2xl bg-gradient-to-r from-[#1DB954]/20 via-[#0a160d] to-gold-500/10 border border-[#1DB954]/30 space-y-3 shadow-xl">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#1DB954] flex items-center justify-center text-black shrink-0 shadow-md">
+              <Sparkles className="w-4 h-4 fill-black" />
+            </div>
+            <div>
+              <h4 className="text-sm font-display font-bold text-white tracking-wide flex items-center gap-2">
+                <span>IMPORT FULL ARTIST DISCOGRAPHY FROM SPOTIFY</span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#1DB954]/20 text-[#1ed760] font-mono font-bold border border-[#1DB954]/40">
+                  DISCOGRAPHY IMPORT
+                </span>
+              </h4>
+              <p className="text-xs text-zinc-300">
+                Select an artist from your roster or enter a Spotify artist URL to automatically fetch and populate all singles, EPs, albums, cover artwork, and full tracklists directly into the catalog.
+              </p>
+            </div>
+          </div>
+
+          <form
+            onSubmit={handleImportFullDiscography}
+            className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 pt-1"
+          >
+            <div className="sm:col-span-4">
+              <select
+                value={discographyTargetArtistId}
+                onChange={(e) => handleArtistSelectChange(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-black/80 border border-white/20 text-xs text-white focus:border-[#1DB954] focus:outline-none"
+              >
+                {artists.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    Assign to: {a.name}
+                  </option>
+                ))}
+                <option value="custom">Custom Artist / Search Name...</option>
+              </select>
+            </div>
+
+            <div className="sm:col-span-5">
+              <input
+                type="text"
+                value={discographyInput}
+                onChange={(e) => setDiscographyInput(e.target.value)}
+                placeholder="Spotify Artist link or name (e.g. allisonsaidthis, Kofi Raj)..."
+                className="w-full px-4 py-2.5 rounded-xl bg-black/80 border border-white/20 text-xs text-white placeholder:text-zinc-500 focus:border-[#1DB954] focus:outline-none font-mono"
+              />
+            </div>
+
+            <div className="sm:col-span-3">
+              <button
+                type="submit"
+                disabled={isImportingFullDiscography || (!discographyInput.trim() && discographyTargetArtistId === "custom")}
+                className="w-full px-4 py-2.5 rounded-xl bg-[#1DB954] hover:bg-[#1ed760] disabled:opacity-50 text-black text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md cursor-pointer"
+              >
+                {isImportingFullDiscography ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin text-black" />
+                    <span>Importing...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    <span>Import Discography</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </form>
+
+          {discographyImportSummary && (
+            <div className="p-3.5 rounded-xl bg-[#1DB954]/20 border border-[#1DB954]/40 text-[#1ed760] text-xs flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <Check className="w-4 h-4 text-[#1ed760]" />
+                <span>
+                  Successfully imported <strong>{discographyImportSummary.releasesImported} releases</strong> ({discographyImportSummary.tracksImported} tracks) for <strong>{discographyImportSummary.artistName}</strong> into the label discography!
+                </span>
+              </span>
+              <button onClick={() => setDiscographyImportSummary(null)} className="text-zinc-400 hover:text-white text-xs ml-2">✕</button>
+            </div>
+          )}
+
+          {discographyImportError && (
+            <div className="p-3.5 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs flex items-center justify-between">
+              <span>⚠️ {discographyImportError}</span>
+              <button onClick={() => setDiscographyImportError(null)} className="text-zinc-400 hover:text-white text-xs ml-2">✕</button>
+            </div>
+          )}
         </div>
       )}
 
@@ -654,59 +850,107 @@ export const ReleaseEditor: React.FC = () => {
           </div>
         </form>
       ) : (
-        /* Release Grid List */
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {releases.map((release) => (
-            <div
-              key={release.id}
-              className="p-4 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between gap-4 hover:border-gold-500/30 transition-all"
-            >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <img
-                  src={release.coverUrl}
-                  alt={release.title}
-                  className="w-14 h-14 rounded-xl object-cover border border-gold-500/30 flex-shrink-0"
-                />
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[10px] font-mono font-bold text-gold-400">
-                      {release.catalogNumber}
-                    </span>
-                    <span className="text-[10px] uppercase font-bold text-slate-400">
-                      {release.format}
+        /* Release Grid List & Search Filters */
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-xl bg-black/40 border border-white/10">
+            <div className="relative w-full sm:w-64">
+              <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-2.5" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search catalog or artist..."
+                className="w-full pl-9 pr-3.5 py-1.5 rounded-lg bg-black/60 border border-white/15 text-xs text-white placeholder:text-zinc-500 focus:border-gold-400 focus:outline-none"
+              />
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <select
+                value={selectedArtistFilter}
+                onChange={(e) => setSelectedArtistFilter(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-black/60 border border-white/15 text-xs text-zinc-300 focus:border-gold-400 focus:outline-none"
+              >
+                <option value="all">All Artists ({releases.length})</option>
+                {artists.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.name}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={selectedFormatFilter}
+                onChange={(e) => setSelectedFormatFilter(e.target.value)}
+                className="px-3 py-1.5 rounded-lg bg-black/60 border border-white/15 text-xs text-zinc-300 focus:border-gold-400 focus:outline-none"
+              >
+                <option value="all">All Formats</option>
+                <option value="Single">Singles</option>
+                <option value="EP">EPs</option>
+                <option value="Album">Albums</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {filteredReleases.map((release) => (
+              <div
+                key={release.id}
+                className="p-4 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-between gap-4 hover:border-gold-500/30 transition-all"
+              >
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <img
+                    src={release.coverUrl}
+                    alt={release.title}
+                    className="w-14 h-14 rounded-xl object-cover border border-gold-500/30 flex-shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono font-bold text-gold-400">
+                        {release.catalogNumber}
+                      </span>
+                      <span className="text-[10px] uppercase font-bold text-slate-400">
+                        {release.format}
+                      </span>
+                    </div>
+                    <h4 className="text-sm font-semibold text-white truncate">
+                      {release.title}
+                    </h4>
+                    <span className="text-xs text-slate-400 truncate block">
+                      {release.artistName} &bull; {release.tracks.length} {release.tracks.length === 1 ? "track" : "tracks"}
                     </span>
                   </div>
-                  <h4 className="text-sm font-semibold text-white truncate">
-                    {release.title}
-                  </h4>
-                  <span className="text-xs text-slate-400 truncate block">
-                    {release.artistName} &bull; {release.tracks.length} {release.tracks.length === 1 ? "track" : "tracks"}
-                  </span>
+                </div>
+
+                <div className="flex items-center space-x-2 flex-shrink-0">
+                  <button
+                    onClick={() => handleStartEdit(release)}
+                    className="p-2 rounded-lg bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-black transition-colors"
+                    title="Edit Release"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Delete release ${release.title}?`)) {
+                        deleteRelease(release.id);
+                      }
+                    }}
+                    className="p-2 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors"
+                    title="Delete Release"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
+            ))}
+          </div>
 
-              <div className="flex items-center space-x-2 flex-shrink-0">
-                <button
-                  onClick={() => handleStartEdit(release)}
-                  className="p-2 rounded-lg bg-gold-500/15 hover:bg-gold-500 text-gold-300 hover:text-black transition-colors"
-                  title="Edit Release"
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => {
-                    if (confirm(`Delete release ${release.title}?`)) {
-                      deleteRelease(release.id);
-                    }
-                  }}
-                  className="p-2 rounded-lg bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-400 transition-colors"
-                  title="Delete Release"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
+          {filteredReleases.length === 0 && (
+            <div className="p-8 text-center rounded-2xl bg-black/20 border border-white/5 space-y-2">
+              <Disc className="w-8 h-8 text-zinc-600 mx-auto" />
+              <p className="text-xs text-zinc-400">No releases found matching your filter criteria.</p>
             </div>
-          ))}
+          )}
         </div>
       )}
     </div>

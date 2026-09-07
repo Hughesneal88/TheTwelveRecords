@@ -260,3 +260,32 @@ export async function autoPopulateReleaseFromUrl(
 
   return null;
 }
+
+/**
+ * Imports full discography (Albums, EPs, Singles, Tracks) for a specific artist
+ * given an artist ID, artist name, and optional Spotify artist link or search term.
+ */
+export async function importDiscographyForArtist(
+  artistId: string,
+  artistName: string,
+  spotifyUrlOrQuery?: string,
+  existingReleaseCount: number = 0
+): Promise<{ releases: Omit<Release, "id">[]; importedTrackCount: number }> {
+  const query = (spotifyUrlOrQuery && spotifyUrlOrQuery.trim()) ? spotifyUrlOrQuery : artistName;
+  const result = await autoPopulateFromSpotifyUrl(
+    query,
+    0,
+    existingReleaseCount
+  );
+
+  const mappedReleases = result.releases.map((r) => ({
+    ...r,
+    artistId: artistId || r.artistId,
+    artistName: artistName || r.artistName
+  }));
+
+  return {
+    releases: mappedReleases,
+    importedTrackCount: result.importedTrackCount
+  };
+}
