@@ -22,13 +22,13 @@ interface ContentContextType {
   updateLabelInfo: (info: Partial<LabelInfo>) => void;
 
   artists: Artist[];
-  addArtist: (artist: Omit<Artist, "id">) => void;
+  addArtist: (artist: Omit<Artist, "id"> & { id?: string }) => Artist;
   updateArtist: (id: string, updates: Partial<Artist>) => void;
   deleteArtist: (id: string) => void;
   getArtistBySlug: (slug: string) => Artist | undefined;
 
   releases: Release[];
-  addRelease: (release: Omit<Release, "id">) => void;
+  addRelease: (release: Omit<Release, "id"> & { id?: string }) => Release;
   updateRelease: (id: string, updates: Partial<Release>) => void;
   deleteRelease: (id: string) => void;
   getReleasesByArtistId: (artistId: string) => Release[];
@@ -167,13 +167,14 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     SupabaseService.saveLabelInfo(updated);
   };
 
-  const addArtist = (artistData: Omit<Artist, "id">) => {
+  const addArtist = (artistData: Omit<Artist, "id"> & { id?: string }): Artist => {
     const newArtist: Artist = {
       ...artistData,
-      id: `artist-${Date.now()}`
+      id: artistData.id || `artist-${Date.now()}`
     };
     setArtistsState((prev) => [newArtist, ...prev]);
     SupabaseService.saveArtist(newArtist);
+    return newArtist;
   };
 
   const updateArtist = (id: string, updates: Partial<Artist>) => {
@@ -204,13 +205,14 @@ export const ContentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     return artists.find((a) => a.slug.toLowerCase() === slug.toLowerCase());
   };
 
-  const addRelease = (releaseData: Omit<Release, "id">) => {
+  const addRelease = (releaseData: Omit<Release, "id"> & { id?: string }): Release => {
     const newRelease: Release = {
       ...releaseData,
-      id: `rel-${Date.now()}`
+      id: releaseData.id || `rel-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`
     };
     setReleasesState((prev) => [newRelease, ...prev]);
     SupabaseService.saveRelease(newRelease);
+    return newRelease;
   };
 
   const updateRelease = (id: string, updates: Partial<Release>) => {
