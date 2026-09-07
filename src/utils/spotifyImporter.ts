@@ -8,6 +8,46 @@ export interface AutoPopulatedArtistResult {
 }
 
 /**
+ * Normalizes title for case-insensitive and format-agnostic release matching
+ */
+export function normalizeReleaseTitle(title: string): string {
+  if (!title) return "";
+  return title
+    .toLowerCase()
+    .replace(/\s*-\s*(single|ep|album|remastered|deluxe|live|edition)$/i, "")
+    .replace(/\s*\((single|ep|album|feat\.[^)]+|ft\.[^)]+|live)\)$/i, "")
+    .replace(/[^a-z0-9]/g, "")
+    .trim();
+}
+
+/**
+ * Merges tracklists without duplicating tracks that have identical normalized titles
+ */
+export function mergeTracks(existingTracks: Track[], incomingTracks: Track[]): Track[] {
+  const merged = [...existingTracks];
+  for (const inc of incomingTracks) {
+    const normIncTitle = inc.title.toLowerCase().replace(/[^a-z0-9]/g, "");
+    const foundIdx = merged.findIndex(
+      (e) => e.title.toLowerCase().replace(/[^a-z0-9]/g, "") === normIncTitle
+    );
+    if (foundIdx >= 0) {
+      merged[foundIdx] = {
+        ...merged[foundIdx],
+        audioUrl: merged[foundIdx].audioUrl || inc.audioUrl,
+        duration: merged[foundIdx].duration || inc.duration,
+        synthTheme: merged[foundIdx].synthTheme || inc.synthTheme
+      };
+    } else {
+      merged.push({
+        ...inc,
+        id: inc.id || `trk-${Date.now()}-${Math.random().toString(36).substr(2, 4)}`
+      });
+    }
+  }
+  return merged;
+}
+
+/**
  * Parses artist / album / track info from a Spotify URL or artist search term
  * and automatically populates artist profile & full discography releases.
  */

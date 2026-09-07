@@ -4,10 +4,10 @@ import { useAuth } from "../../context/AuthContext";
 import { Artist } from "../../types";
 import { Plus, Edit2, Trash2, Check, ArrowLeft, Upload, Loader2, Sparkles } from "lucide-react";
 import { SupabaseService } from "../../utils/supabaseSync";
-import { autoPopulateFromSpotifyUrl } from "../../utils/spotifyImporter";
+import { autoPopulateFromSpotifyUrl, normalizeReleaseTitle, mergeTracks } from "../../utils/spotifyImporter";
 
 export const ArtistEditor: React.FC = () => {
-  const { artists, releases, addArtist, updateArtist, deleteArtist, addRelease } = useContent();
+  const { artists, releases, addArtist, updateArtist, deleteArtist, addRelease, updateRelease } = useContent();
   const { currentUser, canEditAllArtists } = useAuth();
 
   const isArtistManager = currentUser?.role === "artist_manager";
@@ -28,6 +28,7 @@ export const ArtistEditor: React.FC = () => {
     artistName: string;
     releasesImported: number;
     tracksImported: number;
+    skippedCount?: number;
   } | null>(null);
   const [importError, setImportError] = useState<string | null>(null);
 
@@ -157,68 +158,143 @@ export const ArtistEditor: React.FC = () => {
         return;
       }
 
-      const { artistData, releases: importedReleases, importedTrackCount } = result;
+      const { artistData, releases: importedReleases } = result;
+
+      // Check if artist already exists in the roster
+      const existingArtist = artists.find(
+        (a) =>
+          (artistData.slug && a.slug.toLowerCase() === artistData.slug.toLowerCase()) ||
+          (artistData.name && a.name.toLowerCase() === artistData.name.toLowerCase())
+      );
+
+      let targetArtistId = existingArtist?.id;
+      let targetArtistName = artistData.name || existingArtist?.name || "Artist";
 
       if (autoSaveToRoster) {
-        const createdArtist = addArtist({
-          slug: artistData.slug || "artist-" + Date.now(),
-          name: artistData.name || "Artist",
-          realName: artistData.realName || "",
-          tagline: artistData.tagline || "",
-          genre: artistData.genre || "Afro-Gospel",
-          origin: artistData.origin || "Accra, Ghana",
-          photoUrl: artistData.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
-          bannerUrl: artistData.bannerUrl || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&q=80",
-          bio: artistData.bio || "",
-          ministryVision: artistData.ministryVision || "",
-          featuredVideoUrl: artistData.featuredVideoUrl || "",
-          embedUrl: artistData.embedUrl || "",
-          isFeatured: artists.length === 0,
-          socials: {
-            spotify: artistData.socials?.spotify || "https://open.spotify.com",
-            appleMusic: artistData.socials?.appleMusic || "https://music.apple.com",
-            boomplay: artistData.socials?.boomplay || "https://boomplay.com",
-            audiomack: artistData.socials?.audiomack || "https://audiomack.com",
-            youtube: artistData.socials?.youtube || "https://youtube.com",
-            instagram: artistData.socials?.instagram || "https://instagram.com"
-          },
-          releaseIds: [],
-          bookingEmail: artistData.bookingEmail || ""
-        });
-
-        const createdReleaseIds: string[] = [];
-        for (const rel of importedReleases) {
-          const newRel = addRelease({
-            ...rel,
-            artistId: createdArtist.id,
-            artistName: createdArtist.name
+        if (existingArtist) {
+          // Update existing artist with fresh high-res assets & bio rather than duplicating
+          targetArtistId = existingArtist.id;
+          updateArtist(existingArtist.id, {
+            photoUrl: artistData.photoUrl || existingArtist.photoUrl,
+            bannerUrl: artistData.bannerUrl || existingArtist.bannerUrl,
+            bio: artistData.bio || existingArtist.bio,
+            tagline: artistData.tagline || existingArtist.tagline,
+            genre: artistData.genre || existingArtist.genre,
+            embedUrl: artistData.embedUrl || existingArtist.embedUrl,
+            socials: {
+              ...existingArtist.socials,
+              ...(artistData.socials || {})
+            }
           });
-          createdReleaseIds.push(newRel.id);
+        } else {
+          // Create new artist record
+          const createdArtist = addArtist({
+            slug: artistData.slug || "artist-" + Date.now(),
+            name: artistData.name || "Artist",
+            realName: artistData.realName || "",
+            tagline: artistData.tagline || "",
+            genre: artistData.genre || "Afro-Gospel",
+            origin: artistData.origin || "Accra, Ghana",
+            photoUrl: artistData.photoUrl || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=800&q=80",
+            bannerUrl: artistData.bannerUrl || "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&q=80",
+            bio: artistData.bio || "",
+            ministryVision: artistData.ministryVision || "",
+            featuredVideoUrl: artistData.featuredVideoUrl || "",
+            embedUrl: artistData.embedUrl || "",
+            isFeatured: artists.length === 0,
+            socials: {
+              spotify: artistData.socials?.spotify || "https://open.spotify.com",
+              appleMusic: artistData.socials?.appleMusic || "https://music.apple.com",
+              boomplay: artistData.socials?.boomplay || "https://boomplay.com",
+              audiomack: artistData.socials?.audiomack || "https://audiomack.com",
+              youtube: artistData.socials?.youtube || "https://youtube.com",
+              instagram: artistData.socials?.instagram || "https://instagram.com"
+            },
+            releaseIds: [],
+            bookingEmail: artistData.bookingEmail || ""
+          });
+          targetArtistId = createdArtist.id;
+          targetArtistName = createdArtist.name;
         }
 
-        if (createdReleaseIds.length > 0) {
-          updateArtist(createdArtist.id, { releaseIds: createdReleaseIds });
+        // Deduplicate and import releases
+        let newReleasesAdded = 0;
+        let existingReleasesSkipped = 0;
+        let newTracksCount = 0;
+        const allLinkedReleaseIds = existingArtist ? [...existingArtist.releaseIds] : [];
+
+        for (const rel of importedReleases) {
+          const normTitle = normalizeReleaseTitle(rel.title);
+          const existingRel = releases.find(
+            (r) =>
+              (r.artistId === targetArtistId || r.artistName.toLowerCase() === targetArtistName.toLowerCase()) &&
+              normalizeReleaseTitle(r.title) === normTitle
+          );
+
+          if (existingRel) {
+            existingReleasesSkipped++;
+            const mergedTracksList = mergeTracks(existingRel.tracks, rel.tracks);
+            updateRelease(existingRel.id, {
+              embedUrl: existingRel.embedUrl || rel.embedUrl,
+              spotifyUrl: existingRel.spotifyUrl || rel.spotifyUrl,
+              appleMusicUrl: existingRel.appleMusicUrl || rel.appleMusicUrl,
+              tracks: mergedTracksList
+            });
+            if (!allLinkedReleaseIds.includes(existingRel.id)) {
+              allLinkedReleaseIds.push(existingRel.id);
+            }
+          } else {
+            const newRel = addRelease({
+              ...rel,
+              artistId: targetArtistId!,
+              artistName: targetArtistName
+            });
+            newReleasesAdded++;
+            newTracksCount += newRel.tracks.length;
+            allLinkedReleaseIds.push(newRel.id);
+          }
+        }
+
+        if (targetArtistId && allLinkedReleaseIds.length > 0) {
+          updateArtist(targetArtistId, { releaseIds: allLinkedReleaseIds });
         }
 
         setImportSummary({
-          artistName: createdArtist.name,
-          releasesImported: importedReleases.length,
-          tracksImported: importedTrackCount
+          artistName: targetArtistName,
+          releasesImported: newReleasesAdded,
+          tracksImported: newTracksCount,
+          skippedCount: existingReleasesSkipped
         });
         setRosterSpotifyInput("");
       } else {
-        let addedRelIds = [...formData.releaseIds];
-        const targetArtistId = editingArtist ? editingArtist.id : `artist-${Date.now()}`;
-        const targetArtistName = artistData.name || formData.name;
+        // In Form Mode:
+        let newReleasesAdded = 0;
+        let existingReleasesSkipped = 0;
+        let newTracksCount = 0;
+        let updatedReleaseIds = [...formData.releaseIds];
 
-        if (importedReleases.length > 0) {
-          for (const rel of importedReleases) {
+        for (const rel of importedReleases) {
+          const normTitle = normalizeReleaseTitle(rel.title);
+          const existingRel = releases.find(
+            (r) =>
+              (r.artistId === (editingArtist?.id || "") || r.artistName.toLowerCase() === (formData.name || targetArtistName).toLowerCase()) &&
+              normalizeReleaseTitle(r.title) === normTitle
+          );
+
+          if (existingRel) {
+            existingReleasesSkipped++;
+            if (!updatedReleaseIds.includes(existingRel.id)) {
+              updatedReleaseIds.push(existingRel.id);
+            }
+          } else {
             const newRel = addRelease({
               ...rel,
-              artistId: targetArtistId,
-              artistName: targetArtistName
+              artistId: editingArtist ? editingArtist.id : `artist-${Date.now()}`,
+              artistName: artistData.name || formData.name
             });
-            addedRelIds.push(newRel.id);
+            newReleasesAdded++;
+            newTracksCount += newRel.tracks.length;
+            updatedReleaseIds.push(newRel.id);
           }
         }
 
@@ -237,13 +313,14 @@ export const ArtistEditor: React.FC = () => {
             ...prev.socials,
             ...(artistData.socials || {})
           },
-          releaseIds: addedRelIds
+          releaseIds: updatedReleaseIds
         }));
 
         setImportSummary({
-          artistName: artistData.name || "Artist",
-          releasesImported: importedReleases.length,
-          tracksImported: importedTrackCount
+          artistName: artistData.name || formData.name || "Artist",
+          releasesImported: newReleasesAdded,
+          tracksImported: newTracksCount,
+          skippedCount: existingReleasesSkipped
         });
       }
     } catch (err: any) {
@@ -352,9 +429,18 @@ export const ArtistEditor: React.FC = () => {
           {importSummary && (
             <div className="p-3.5 rounded-xl bg-[#1DB954]/20 border border-[#1DB954]/40 text-[#1ed760] text-xs flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-[#1ed760]" />
+                <Check className="w-4 h-4 text-[#1ed760] shrink-0" />
                 <span>
-                  Successfully imported <strong>{importSummary.artistName}</strong> with <strong>{importSummary.releasesImported} discography releases</strong> ({importSummary.tracksImported} tracks) into label catalog!
+                  {importSummary.releasesImported > 0 ? (
+                    <>
+                      Imported <strong>{importSummary.releasesImported} new releases</strong> ({importSummary.tracksImported} tracks) for <strong>{importSummary.artistName}</strong>!
+                      {importSummary.skippedCount ? ` (${importSummary.skippedCount} existing releases in catalog were preserved without duplicates)` : ""}
+                    </>
+                  ) : (
+                    <>
+                      All <strong>{importSummary.skippedCount || 0} releases</strong> for <strong>{importSummary.artistName}</strong> are already in the catalog — 0 duplicates created.
+                    </>
+                  )}
                 </span>
               </span>
               <button onClick={() => setImportSummary(null)} className="text-zinc-400 hover:text-white text-xs ml-2">✕</button>
@@ -439,7 +525,16 @@ export const ArtistEditor: React.FC = () => {
             {importSummary && (
               <div className="p-2.5 rounded-lg bg-[#1DB954]/20 border border-[#1DB954]/40 text-[#1ed760] text-xs flex items-center justify-between mt-2">
                 <span>
-                  ✅ Auto-filled profile for <strong>{importSummary.artistName}</strong> and added <strong>{importSummary.releasesImported} discography releases</strong> ({importSummary.tracksImported} tracks)!
+                  {importSummary.releasesImported > 0 ? (
+                    <>
+                      ✅ Added <strong>{importSummary.releasesImported} new releases</strong> ({importSummary.tracksImported} tracks) for <strong>{importSummary.artistName}</strong>
+                      {importSummary.skippedCount ? ` (${importSummary.skippedCount} existing releases in catalog were preserved without duplicates)` : ""}!
+                    </>
+                  ) : (
+                    <>
+                      ✅ Profile updated. All <strong>{importSummary.skippedCount || 0} discography releases</strong> are already in the catalog (0 duplicates created).
+                    </>
+                  )}
                 </span>
                 <button type="button" onClick={() => setImportSummary(null)} className="text-zinc-400 hover:text-white text-xs ml-2">✕</button>
               </div>

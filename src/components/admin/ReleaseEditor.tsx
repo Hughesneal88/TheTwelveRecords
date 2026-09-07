@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { useContent } from "../../context/ContentContext";
 import { Release, Track, ReleaseFormat } from "../../types";
 import { Plus, Edit2, Trash2, Disc, Music, Check, ArrowLeft, Upload, Sparkles, Loader2, Play, Pause, Search, Filter } from "lucide-react";
-import { autoPopulateReleaseFromUrl, importDiscographyForArtist } from "../../utils/spotifyImporter";
+import { autoPopulateReleaseFromUrl, importDiscographyForArtist, normalizeReleaseTitle, mergeTracks } from "../../utils/spotifyImporter";
 import { SupabaseService } from "../../utils/supabaseSync";
 
 export const ReleaseEditor: React.FC = () => {
@@ -21,6 +21,7 @@ export const ReleaseEditor: React.FC = () => {
     artistName: string;
     releasesImported: number;
     tracksImported: number;
+    skippedCount?: number;
   } | null>(null);
   const [discographyImportError, setDiscographyImportError] = useState<string | null>(null);
 
@@ -122,27 +123,53 @@ export const ReleaseEditor: React.FC = () => {
         return;
       }
 
-      const createdReleaseIds: string[] = [];
+      let newReleasesAdded = 0;
+      let existingReleasesSkipped = 0;
+      let newTracksCount = 0;
+      const allLinkedReleaseIds = matchedArtist ? [...(matchedArtist.releaseIds || [])] : [];
+
       for (const rel of result.releases) {
-        const newRel = addRelease({
-          ...rel,
-          artistId: targetArtistId,
-          artistName: targetArtistName
-        });
-        createdReleaseIds.push(newRel.id);
+        const normTitle = normalizeReleaseTitle(rel.title);
+        const existingRel = releases.find(
+          (r) =>
+            (r.artistId === targetArtistId || r.artistName.toLowerCase() === targetArtistName.toLowerCase()) &&
+            normalizeReleaseTitle(r.title) === normTitle
+        );
+
+        if (existingRel) {
+          existingReleasesSkipped++;
+          const mergedTracksList = mergeTracks(existingRel.tracks, rel.tracks);
+          updateRelease(existingRel.id, {
+            embedUrl: existingRel.embedUrl || rel.embedUrl,
+            spotifyUrl: existingRel.spotifyUrl || rel.spotifyUrl,
+            appleMusicUrl: existingRel.appleMusicUrl || rel.appleMusicUrl,
+            tracks: mergedTracksList
+          });
+          if (!allLinkedReleaseIds.includes(existingRel.id)) {
+            allLinkedReleaseIds.push(existingRel.id);
+          }
+        } else {
+          const newRel = addRelease({
+            ...rel,
+            artistId: targetArtistId,
+            artistName: targetArtistName
+          });
+          newReleasesAdded++;
+          newTracksCount += newRel.tracks.length;
+          allLinkedReleaseIds.push(newRel.id);
+        }
       }
 
-      // Link newly created releases to the artist record
-      if (matchedArtist && createdReleaseIds.length > 0) {
-        const existingIds = matchedArtist.releaseIds || [];
-        const updatedIds = Array.from(new Set([...existingIds, ...createdReleaseIds]));
-        updateArtist(matchedArtist.id, { releaseIds: updatedIds });
+      // Link newly created/updated releases to the artist record
+      if (matchedArtist && allLinkedReleaseIds.length > 0) {
+        updateArtist(matchedArtist.id, { releaseIds: allLinkedReleaseIds });
       }
 
       setDiscographyImportSummary({
         artistName: targetArtistName,
-        releasesImported: result.releases.length,
-        tracksImported: result.importedTrackCount
+        releasesImported: newReleasesAdded,
+        tracksImported: newTracksCount,
+        skippedCount: existingReleasesSkipped
       });
       setDiscographyInput("");
     } catch (err: any) {
@@ -241,6 +268,22 @@ export const ReleaseEditor: React.FC = () => {
         return;
       }
 
+      // Check if release already exists in catalog
+      const normTitle = normalizeReleaseTitle(populated.title || "");
+      const existingRel = releases.find(
+        (r) =>
+          (!editingRelease || r.id !== editingRelease.id) &&
+          (r.artistId === formData.artistId || r.artistName.toLowerCase() === (populated.artistName || formData.artistName).toLowerCase()) &&
+          normalizeReleaseTitle(r.title) === normTitle
+      );
+
+      const baseTracks = formData.tracks.filter(
+        (t) => t.title && t.title !== "New Track" && !t.title.startsWith("Track ")
+      );
+      const mergedTracksList = populated.tracks && populated.tracks.length > 0
+        ? mergeTracks(baseTracks, populated.tracks)
+        : formData.tracks;
+
       setFormData((prev) => ({
         ...prev,
         title: populated.title || prev.title,
@@ -253,10 +296,14 @@ export const ReleaseEditor: React.FC = () => {
         embedUrl: populated.embedUrl || prev.embedUrl,
         spotifyUrl: populated.spotifyUrl || prev.spotifyUrl,
         appleMusicUrl: populated.appleMusicUrl || prev.appleMusicUrl,
-        tracks: populated.tracks && populated.tracks.length > 0 ? populated.tracks : prev.tracks
+        tracks: mergedTracksList.length > 0 ? mergedTracksList : populated.tracks || prev.tracks
       }));
 
-      setImportFeedback(`Loaded "${populated.title}" with ${populated.tracks?.length || 1} tracks & high-res artwork!`);
+      if (existingRel) {
+        setImportFeedback(`Loaded "${populated.title}" (${mergedTracksList.length} tracks). Note: '${existingRel.title}' is already in catalog (${existingRel.catalogNumber}) without duplicate entries.`);
+      } else {
+        setImportFeedback(`Loaded "${populated.title}" with ${populated.tracks?.length || 1} tracks & high-res artwork!`);
+      }
     } catch (err: any) {
       setImportError(err?.message || "Failed to auto-populate release.");
     } finally {
@@ -431,9 +478,18 @@ export const ReleaseEditor: React.FC = () => {
           {discographyImportSummary && (
             <div className="p-3.5 rounded-xl bg-[#1DB954]/20 border border-[#1DB954]/40 text-[#1ed760] text-xs flex items-center justify-between">
               <span className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-[#1ed760]" />
+                <Check className="w-4 h-4 text-[#1ed760] shrink-0" />
                 <span>
-                  Successfully imported <strong>{discographyImportSummary.releasesImported} releases</strong> ({discographyImportSummary.tracksImported} tracks) for <strong>{discographyImportSummary.artistName}</strong> into the label discography!
+                  {discographyImportSummary.releasesImported > 0 ? (
+                    <>
+                      Imported <strong>{discographyImportSummary.releasesImported} new releases</strong> ({discographyImportSummary.tracksImported} tracks) for <strong>{discographyImportSummary.artistName}</strong> into the label discography!
+                      {discographyImportSummary.skippedCount ? ` (${discographyImportSummary.skippedCount} existing releases in catalog were preserved without duplicates)` : ""}
+                    </>
+                  ) : (
+                    <>
+                      All <strong>{discographyImportSummary.skippedCount || 0} releases</strong> for <strong>{discographyImportSummary.artistName}</strong> are already in the catalog (0 duplicates created).
+                    </>
+                  )}
                 </span>
               </span>
               <button onClick={() => setDiscographyImportSummary(null)} className="text-zinc-400 hover:text-white text-xs ml-2">✕</button>
