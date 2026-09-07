@@ -36,6 +36,7 @@ export interface Artist {
   bio: string;
   ministryVision?: string;
   featuredVideoUrl?: string;
+  embedUrl?: string;
   isFeatured: boolean;
   socials: ArtistSocials;
   releaseIds: string[];
@@ -73,6 +74,7 @@ export interface Release {
   audiomackUrl?: string;
   youtubeUrl?: string;
   bandcampUrl?: string;
+  embedUrl?: string;
   isFeatured: boolean;
 }
 

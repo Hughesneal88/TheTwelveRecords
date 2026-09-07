@@ -108,10 +108,11 @@ export const initialArtists: Artist[] = [
     bio: "allisonsaidthis is a Ghanaian Christian hip hop artist, lyricist, and spoken word poet. Starting their poetic journey at the age of 8 and later honing their craft with the SCRIBES poetry movement in university, allisonsaidthis blends raw theological contemplation, intricate cadences, and soulful hip-hop rhythms. With notable projects including the 2025 release 'Sticky Notes' and 2026 singles 'Taste' and 'KAIZEN', their music is defined by uncompromised faith, honest vulnerability, and atmospheric storytelling.",
     ministryVision: "To turn spoken truth into rhythm, ministering to the quiet spaces of the soul where faith meets life.",
     featuredVideoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    embedUrl: "https://open.spotify.com/embed/artist/4tUqM99Y3aP3D6b7QfL19Y?utm_source=generator&theme=0",
     isFeatured: true,
     socials: {
-      spotify: "https://open.spotify.com",
-      appleMusic: "https://music.apple.com",
+      spotify: "https://open.spotify.com/artist/4tUqM99Y3aP3D6b7QfL19Y",
+      appleMusic: "https://music.apple.com/us/artist/allisonsaidthis/1786523992",
       boomplay: "https://boomplay.com",
       audiomack: "https://audiomack.com/allisonsaidthis",
       youtube: "https://youtube.com",
@@ -133,12 +134,13 @@ export const initialArtists: Artist[] = [
     bio: "Kofi Raj is a dynamic Ghanaian gospel rapper, lyricist, and songwriter based in Accra. Renowned for his razor-sharp delivery and passionate gospel testimony, Kofi Raj frequently collaborates across the Ghanaian Christian music vanguard—including landmark joint works with Kobby Flow, Kwame Jnr, and Phil Angs on anthems like 'Fire In Me', 'Barabbas Was Me', and his solo breakthrough 'Alert'. Blending contemporary Ghanaian drill and Afrobeat rhythms with unwavering kingdom messages, Kofi Raj is empowering a new generation to praise with bold conviction.",
     ministryVision: "Taking the gospel to the streets and the nations through relentless energy, authentic truth, and unapologetic praise.",
     featuredVideoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+    embedUrl: "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0",
     isFeatured: true,
     socials: {
-      spotify: "https://open.spotify.com",
-      appleMusic: "https://music.apple.com",
-      boomplay: "https://boomplay.com",
-      audiomack: "https://audiomack.com",
+      spotify: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+      appleMusic: "https://music.apple.com/us/artist/kofi-raj/1545624892",
+      boomplay: "https://www.boomplay.com/artists/21893892",
+      audiomack: "https://audiomack.com/kofiraj",
       youtube: "https://youtube.com",
       instagram: "https://instagram.com/kofirajmusic"
     },
@@ -158,6 +160,7 @@ export const initialReleases: Release[] = [
     genre: "Christian Hip Hop / Spoken Word",
     format: "Album",
     coverUrl: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=800&q=80",
+    embedUrl: "https://audiomack.com/embed/allisonsaidthis/album/sticky-notes?background=1",
     description: "The seminal body of work by allisonsaidthis, exploring faith, growth, and divine grace through intricate spoken word poetry and soulful hip hop production.",
     tracks: [
       {
@@ -186,8 +189,8 @@ export const initialReleases: Release[] = [
         synthTheme: "ambient"
       }
     ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
+    spotifyUrl: "https://open.spotify.com/artist/4tUqM99Y3aP3D6b7QfL19Y",
+    appleMusicUrl: "https://music.apple.com/us/artist/allisonsaidthis/1786523992",
     boomplayUrl: "https://boomplay.com",
     audiomackUrl: "https://audiomack.com/allisonsaidthis/album/sticky-notes",
     youtubeUrl: "https://youtube.com",
@@ -203,6 +206,7 @@ export const initialReleases: Release[] = [
     genre: "Christian Hip Hop",
     format: "Single",
     coverUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=800&q=80",
+    embedUrl: "https://audiomack.com/embed/allisonsaidthis/song/taste?background=1",
     description: "A vibrant, faith-fueled declaration inspired by Psalm 34:8 — Taste and see that the Lord is good.",
     tracks: [
       {
@@ -212,10 +216,11 @@ export const initialReleases: Release[] = [
         synthTheme: "afrogospel"
       }
     ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
+    spotifyUrl: "https://open.spotify.com/artist/4tUqM99Y3aP3D6b7QfL19Y",
+    appleMusicUrl: "https://music.apple.com/us/artist/allisonsaidthis/1786523992",
     boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com/allisonsaidthis",
+    audiomackUrl: "https://audiomack.com/allisonsaidthis/song/taste",
+    youtubeUrl: "https://youtube.com",
     isFeatured: true
   },
   {
@@ -228,6 +233,7 @@ export const initialReleases: Release[] = [
     genre: "Spoken Word / Hip Hop",
     format: "EP",
     coverUrl: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
+    embedUrl: "https://audiomack.com/embed/allisonsaidthis/album/the-quiet-between-us?background=1",
     description: "A meditative and contemplative EP featuring 'KAIZEN' and 'Thoughts in the rain', exploring continual spiritual refinement.",
     tracks: [
       {
@@ -243,10 +249,11 @@ export const initialReleases: Release[] = [
         synthTheme: "ambient"
       }
     ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
+    spotifyUrl: "https://open.spotify.com/artist/4tUqM99Y3aP3D6b7QfL19Y",
+    appleMusicUrl: "https://music.apple.com/us/artist/allisonsaidthis/1786523992",
     boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com/allisonsaidthis",
+    audiomackUrl: "https://audiomack.com/allisonsaidthis/album/the-quiet-between-us",
+    youtubeUrl: "https://youtube.com",
     isFeatured: false
   },
   {
@@ -259,6 +266,7 @@ export const initialReleases: Release[] = [
     genre: "Afro-Gospel / Drill",
     format: "Single",
     coverUrl: "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?w=800&q=80",
+    embedUrl: "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0",
     description: "Kofi Raj’s explosive breakthrough single delivering high-energy gospel rhymes with heavy West African 808 percussion.",
     tracks: [
       {
@@ -268,10 +276,11 @@ export const initialReleases: Release[] = [
         synthTheme: "praise"
       }
     ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
-    boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com",
+    spotifyUrl: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+    appleMusicUrl: "https://music.apple.com/us/artist/kofi-raj/1545624892",
+    boomplayUrl: "https://boomplay.com/artists/21893892",
+    audiomackUrl: "https://audiomack.com/kofiraj",
+    youtubeUrl: "https://youtube.com",
     isFeatured: true
   },
   {
@@ -284,6 +293,7 @@ export const initialReleases: Release[] = [
     genre: "Afro-Gospel",
     format: "Single",
     coverUrl: "https://images.unsplash.com/photo-1518609878373-06d740f60d8b?w=800&q=80",
+    embedUrl: "https://audiomack.com/embed/kobbyflow/song/fire-in-me?background=1",
     description: "Electrifying praise collaboration featuring Kobby Flow and Kwame Jnr, igniting the believer's inner passion for God.",
     tracks: [
       {
@@ -293,10 +303,11 @@ export const initialReleases: Release[] = [
         synthTheme: "praise"
       }
     ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
-    boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com",
+    spotifyUrl: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+    appleMusicUrl: "https://music.apple.com/us/artist/kofi-raj/1545624892",
+    boomplayUrl: "https://boomplay.com/artists/21893892",
+    audiomackUrl: "https://audiomack.com/kobbyflow/song/fire-in-me",
+    youtubeUrl: "https://youtube.com",
     isFeatured: true
   },
   {
@@ -309,6 +320,7 @@ export const initialReleases: Release[] = [
     genre: "Afro-Gospel / Drill",
     format: "EP",
     coverUrl: "https://images.unsplash.com/photo-1465847899084-d164df4dedc6?w=800&q=80",
+    embedUrl: "https://open.spotify.com/embed/artist/5gR5ZtQ45lqXWlJ4a4kY5Z?utm_source=generator&theme=0",
     description: "A profound lyrical masterpiece on substituted grace, the cross, and victorious salvation featuring Ozzy Music & Erady.",
     tracks: [
       {
@@ -330,10 +342,11 @@ export const initialReleases: Release[] = [
         synthTheme: "praise"
       }
     ],
-    spotifyUrl: "https://open.spotify.com",
-    appleMusicUrl: "https://music.apple.com",
-    boomplayUrl: "https://boomplay.com",
-    audiomackUrl: "https://audiomack.com",
+    spotifyUrl: "https://open.spotify.com/artist/5gR5ZtQ45lqXWlJ4a4kY5Z",
+    appleMusicUrl: "https://music.apple.com/us/artist/kofi-raj/1545624892",
+    boomplayUrl: "https://boomplay.com/artists/21893892",
+    audiomackUrl: "https://audiomack.com/kofiraj",
+    youtubeUrl: "https://youtube.com",
     isFeatured: false
   }
 ];

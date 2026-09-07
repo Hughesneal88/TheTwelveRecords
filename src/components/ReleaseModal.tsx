@@ -1,7 +1,8 @@
 import React from "react";
 import { useContent } from "../context/ContentContext";
 import { useAudio } from "../context/AudioContext";
-import { X, Play, Pause, Music, Clock } from "lucide-react";
+import { X, Play, Pause, Music, Clock, ExternalLink, Headphones } from "lucide-react";
+import { getPrimaryEmbedUrl } from "../utils/embedHelper";
 
 export const ReleaseModal: React.FC = () => {
   const { selectedReleaseModal, setSelectedReleaseModal } = useContent();
@@ -10,6 +11,7 @@ export const ReleaseModal: React.FC = () => {
   if (!selectedReleaseModal) return null;
 
   const release = selectedReleaseModal;
+  const embedUrl = getPrimaryEmbedUrl(release);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/90 backdrop-blur-md animate-in fade-in">
@@ -26,7 +28,7 @@ export const ReleaseModal: React.FC = () => {
           <img
             src={release.coverUrl}
             alt={release.title}
-            className="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl object-cover border border-white/15 flex-shrink-0"
+            className="w-36 h-36 sm:w-44 sm:h-44 rounded-2xl object-cover border border-white/15 flex-shrink-0 bg-black"
           />
 
           <div className="flex-1 text-center sm:text-left min-w-0">
@@ -56,19 +58,10 @@ export const ReleaseModal: React.FC = () => {
                   href={release.spotifyUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-3 py-1 bg-white/10 hover:bg-[#1DB954] text-white hover:text-black rounded-full font-bold transition-all"
+                  className="px-3 py-1 bg-white/10 hover:bg-[#1DB954] text-white hover:text-black rounded-full font-bold transition-all flex items-center gap-1"
                 >
-                  SPOTIFY
-                </a>
-              )}
-              {release.boomplayUrl && (
-                <a
-                  href={release.boomplayUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="px-3 py-1 bg-white/10 hover:bg-[#c8a858] text-white hover:text-black rounded-full font-bold transition-all"
-                >
-                  BOOMPLAY
+                  <span>SPOTIFY</span>
+                  <ExternalLink className="w-3 h-3" />
                 </a>
               )}
               {release.audiomackUrl && (
@@ -76,14 +69,58 @@ export const ReleaseModal: React.FC = () => {
                   href={release.audiomackUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-3 py-1 bg-white/10 hover:bg-amber-500 text-white hover:text-black rounded-full font-bold transition-all"
+                  className="px-3 py-1 bg-white/10 hover:bg-amber-500 text-white hover:text-black rounded-full font-bold transition-all flex items-center gap-1"
                 >
-                  AUDIOMACK
+                  <span>AUDIOMACK</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+              {release.appleMusicUrl && (
+                <a
+                  href={release.appleMusicUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-1 bg-white/10 hover:bg-rose-500 text-white hover:text-black rounded-full font-bold transition-all flex items-center gap-1"
+                >
+                  <span>APPLE MUSIC</span>
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              )}
+              {release.boomplayUrl && (
+                <a
+                  href={release.boomplayUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-1 bg-white/10 hover:bg-[#c8a858] text-white hover:text-black rounded-full font-bold transition-all flex items-center gap-1"
+                >
+                  <span>BOOMPLAY</span>
+                  <ExternalLink className="w-3 h-3" />
                 </a>
               )}
             </div>
           </div>
         </div>
+
+        {/* Embedded Streaming Player */}
+        {embedUrl && (
+          <div className="px-6 pt-5 pb-1 bg-black/40 border-b border-white/5">
+            <div className="flex items-center gap-2 mb-2 text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+              <Headphones className="w-3 h-3 text-gold-400" />
+              <span>LIVE STREAMING EMBED</span>
+            </div>
+            <iframe
+              src={embedUrl}
+              title={release.title}
+              width="100%"
+              height="152"
+              frameBorder="0"
+              allowFullScreen
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+              className="rounded-xl border border-white/10 bg-black/50"
+            />
+          </div>
+        )}
 
         <div className="p-6 overflow-y-auto space-y-3 flex-1">
           <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-zinc-400 mb-2 flex items-center gap-1.5">

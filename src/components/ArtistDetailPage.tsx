@@ -2,7 +2,8 @@ import React from "react";
 import { useContent } from "../context/ContentContext";
 import { useAuth } from "../context/AuthContext";
 import { useAudio } from "../context/AudioContext";
-import { ArrowLeft, Play, Pause, ExternalLink, Edit3, Video, Disc, Clock, Share2 } from "lucide-react";
+import { ArrowLeft, Play, Pause, ExternalLink, Edit3, Video, Disc, Clock, Share2, Headphones } from "lucide-react";
+import { getPrimaryEmbedUrl } from "../utils/embedHelper";
 
 export const ArtistDetailPage: React.FC = () => {
   const { activeArtistSlug, getArtistBySlug, getReleasesByArtistId, navigateToHome, setIsAdminModalOpen, setSelectedReleaseModal } = useContent();
@@ -28,6 +29,7 @@ export const ArtistDetailPage: React.FC = () => {
 
   const artistReleases = getReleasesByArtistId(artist.id);
   const canEdit = canEditArtistProfile(artist.id);
+  const embedPlayerUrl = getPrimaryEmbedUrl(artist);
 
   const handleShare = () => {
     if (navigator.share) {
@@ -42,9 +44,9 @@ export const ArtistDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-36 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Top Breadcrumb Bar */}
-      <div className="py-4 flex items-center justify-between border-b border-white/10 mb-8">
+    <div className="min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      {/* Top Breadcrumb & Actions */}
+      <div className="flex items-center justify-between pb-8">
         <button
           onClick={navigateToHome}
           className="flex items-center gap-2 text-xs font-mono text-zinc-400 hover:text-white uppercase tracking-wider transition-colors"
@@ -57,7 +59,7 @@ export const ArtistDetailPage: React.FC = () => {
           {canEdit && (
             <button
               onClick={() => setIsAdminModalOpen(true)}
-              className="px-4 py-2 bg-[#c8a858] text-black text-xs font-bold uppercase tracking-wider rounded-full flex items-center gap-1.5"
+              className="px-4 py-2 bg-[#c8a858] text-black text-xs font-bold uppercase tracking-wider rounded-full flex items-center gap-1.5 shadow-lg hover:bg-gold-300 transition-colors"
             >
               <Edit3 className="w-3.5 h-3.5" />
               <span>Edit Profile</span>
@@ -66,7 +68,7 @@ export const ArtistDetailPage: React.FC = () => {
 
           <button
             onClick={handleShare}
-            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300"
+            className="p-2 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300 transition-colors"
             title="Share"
           >
             <Share2 className="w-4 h-4" />
@@ -108,19 +110,10 @@ export const ArtistDetailPage: React.FC = () => {
                 href={artist.socials.spotify}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-[#1DB954] text-white hover:text-black font-semibold text-xs transition-all font-mono"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-[#1DB954] text-white hover:text-black font-semibold text-xs transition-all font-mono flex items-center gap-1.5"
               >
-                SPOTIFY
-              </a>
-            )}
-            {artist.socials.boomplay && (
-              <a
-                href={artist.socials.boomplay}
-                target="_blank"
-                rel="noreferrer"
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-[#c8a858] text-white hover:text-black font-semibold text-xs transition-all font-mono"
-              >
-                BOOMPLAY
+                <span>SPOTIFY</span>
+                <ExternalLink className="w-3 h-3" />
               </a>
             )}
             {artist.socials.audiomack && (
@@ -128,9 +121,10 @@ export const ArtistDetailPage: React.FC = () => {
                 href={artist.socials.audiomack}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-amber-500 text-white hover:text-black font-semibold text-xs transition-all font-mono"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-amber-500 text-white hover:text-black font-semibold text-xs transition-all font-mono flex items-center gap-1.5"
               >
-                AUDIOMACK
+                <span>AUDIOMACK</span>
+                <ExternalLink className="w-3 h-3" />
               </a>
             )}
             {artist.socials.appleMusic && (
@@ -138,9 +132,21 @@ export const ArtistDetailPage: React.FC = () => {
                 href={artist.socials.appleMusic}
                 target="_blank"
                 rel="noreferrer"
-                className="px-4 py-2 rounded-full bg-white/10 hover:bg-pink-500 text-white hover:text-white font-semibold text-xs transition-all font-mono"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-rose-500 text-white hover:text-white font-semibold text-xs transition-all font-mono flex items-center gap-1.5"
               >
-                APPLE MUSIC
+                <span>APPLE MUSIC</span>
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            )}
+            {artist.socials.boomplay && (
+              <a
+                href={artist.socials.boomplay}
+                target="_blank"
+                rel="noreferrer"
+                className="px-4 py-2 rounded-full bg-white/10 hover:bg-[#c8a858] text-white hover:text-black font-semibold text-xs transition-all font-mono flex items-center gap-1.5"
+              >
+                <span>BOOMPLAY</span>
+                <ExternalLink className="w-3 h-3" />
               </a>
             )}
           </div>
@@ -150,6 +156,27 @@ export const ArtistDetailPage: React.FC = () => {
       {/* Main Content: Bio & Discography Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 pt-12">
         <div className="lg:col-span-7 space-y-10">
+          {/* Embedded Streaming Player Spotlight */}
+          {embedPlayerUrl && (
+            <div className="p-6 rounded-2xl bg-[#0b0b0f] border border-white/10 space-y-3">
+              <div className="flex items-center gap-2 text-xs font-mono text-gold-400 uppercase tracking-widest font-bold">
+                <Headphones className="w-4 h-4 text-gold-400" />
+                <span>STREAM {artist.name.toUpperCase()} (LIVE EMBED)</span>
+              </div>
+              <iframe
+                src={embedPlayerUrl}
+                title={`${artist.name} Spotify Player`}
+                width="100%"
+                height="352"
+                frameBorder="0"
+                allowFullScreen
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy"
+                className="rounded-xl border border-white/10 bg-black"
+              />
+            </div>
+          )}
+
           <div>
             <h3 className="font-display font-bold text-xl text-white uppercase tracking-wider mb-4">
               Biography
